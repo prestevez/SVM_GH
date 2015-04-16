@@ -6,7 +6,11 @@ source("01_Setup.R")
 source("02_Read_data.R")
 source("Functions.R")
 
-logfile <- file("results.md")
+logfile <- file("results.txt")
 
-setwd(dirRdata)
+setwd(dirText)
+
+# Initialise sink
+
+sink(logfile, append=TRUE, type=c("output", "message"))
 
