@@ -6,7 +6,6 @@ setwd(dirRawData)
 ujt.df <- read.csv("ujt.csv", na.strings=c("",".","NULL"))
 
 flowdata <- as.matrix(ujt.df[,1:22])
-head(flowdata)
 
 ## Read the spatial weight matrices
 W.df <- read.csv("Weight_Matrices.csv", header=TRUE,stringsAsFactors=FALSE)
