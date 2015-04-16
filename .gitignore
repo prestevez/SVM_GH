@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 SVM_GH.Rproj
+.DS_Store
+RawData
