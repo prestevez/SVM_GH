@@ -1,5 +1,12 @@
 ## Begin Functions.R
 
+# RMSE function
+
+rmse<-function(obs, pred, na.rm=TRUE)
+{sqrt(mean((obs-pred)^2, na.rm=na.rm))}
+
+# End of RMSE function
+
 # Kernel methods practical library
 
 embed <- function(data, m, s=FALSE, avg=FALSE, int=FALSE, std=FALSE, interval=NULL)
