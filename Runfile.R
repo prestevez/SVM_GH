@@ -1,4 +1,4 @@
-## Run file
+## Runfile.R
 
 # Run this file to execute
 
@@ -13,4 +13,12 @@ setwd(dirText)
 # Initialise sink
 
 sink(logfile, append=TRUE, type=c("output", "message"))
+
+setwd(mainWD)
+source("03_Analysis_Results.R", echo=TRUE, max.deparse.length=10000)
+
+# Ends sink
+sink()
+
+## End of Runfile.R
 
