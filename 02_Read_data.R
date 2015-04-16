@@ -28,7 +28,7 @@ W3[1:22,1:22] <- data.matrix(W.df[47:68,2:23])
 # Save data objects
 
 setwd(dirRdata)
-save(ujt.df, flowdata, W.df, W1, W2, W3, mainWD, dirRawData, dirRdata, dirRoutput, dirText
+save(ujt.df, flowdata, W.df, W1, W2, W3, mainWD, dirRawData, dirRdata, dirRoutput, dirText,
      file="SVM_GH.RData")
 
 # Return to mainWD
