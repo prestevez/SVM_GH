@@ -19,4 +19,13 @@ svm_search
 
 kable(svm_search$svm_results, format="markdown")
 
+# Save data objects
+
+setwd(dirRdata)
+save(ujt.df, flowdata, W.df, W1, W2, W3, mainWD, dirRawData, dirRdata, dirRoutput, dirText,
+     svm_search, file="SVM_GH.RData")
+
+# Return to mainWD
+setwd(mainWD)
+
 # End of 03_Analysis_Results.R
