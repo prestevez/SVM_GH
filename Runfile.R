@@ -17,6 +17,8 @@ sink(logfile, append=TRUE, type=c("output", "message"))
 setwd(mainWD)
 source("03_Analysis_Results.R", echo=TRUE, max.deparse.length=10000)
 
+# To modify analysis parameters, modify the values in the 03_Analysis_Results.R file
+
 # Ends sink
 sink()
 
