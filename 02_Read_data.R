@@ -25,4 +25,9 @@ rownames(W3) <- W.df[47:68,1]
 colnames(W3) <- colnames(W.df)[2:23]
 W3[1:22,1:22] <- data.matrix(W.df[47:68,2:23])
 
+# Save data objects
+
+setwd(dirRdata)
+save(ujt.df, flowdata, W.df, W1, W2, W3,
+     file="SVM_GH.Rdata")
 
