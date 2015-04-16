@@ -31,3 +31,6 @@ setwd(dirRdata)
 save(ujt.df, flowdata, W.df, W1, W2, W3,
      file="SVM_GH.Rdata")
 
+# Return to mainWD
+setwd(mainWD)
+
