@@ -133,6 +133,8 @@ minmax_rev <- function(data, lb=0, ub=1, mins, maxs)
 
 # Multiple plot function
 #
+# Taken from: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+#
 # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
 # - cols:   Number of columns in layout
 # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
@@ -181,5 +183,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 
 ## End of Multiple plot function
+
 
 
