@@ -250,7 +250,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   
   svm_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
                             "C"=0, "Epsilon"=0, "Train Error"=0, "Residual Error"=0,
-                            "Predicted Error"=0, "Interval"=0)
+                            "Predicted Error"=0)
   
   colnames(svm_results)[7:9] <- c("Training Error" ,"Resiudal Error",
                                   "Predicted Error") 
