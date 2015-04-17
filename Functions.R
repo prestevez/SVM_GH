@@ -223,7 +223,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
-                     trainp=NULL, outWD=NULL, mainWD=NULL)
+                     trainp=NULL, outWD=NULL, mainWD=NULL, 
+                     nrmse=FALSE)
 {
   # Inputs:
   # data: Matrix for the SVM
@@ -237,17 +238,34 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # trainp: Training period
   # outWD: name of Output Working directory
   # mainWD: name of main WD
+  # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
   
   # Initialise variables for best error and best model
   best_model <- NULL
   best_error <- 1000000
   best_time <- NULL
   
+  # If NRMSE is TRUE
+  
+  res.error <- "Residual Error"
+  pred.error <- "Predicted Error"
+  
+  if (rmse=TRUE)
+  {
+    rmse <- nrmse
+    res.error <- "Standard Residual Error"
+    pred.error <- "Standard Predicted Error"
+  }
+  else
+  {
+    
+  }
+  
   # Create empty data frame to store results
   
   svm_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
-                            "C"=0, "Epsilon"=0, "T Error"=0, "T RMSE"=0,
-                            "V RMSE"=0)
+                            "C"=0, "Epsilon"=0, "Training Error"=0, res.error=0,
+                            pred.error=0)
   
   ind <- 1
   # Cycle through parameters
