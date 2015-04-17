@@ -224,7 +224,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
                      trainp=NULL, outWD=NULL, mainWD=NULL, 
-                     nrmse=FALSE)
+                     nrmse=FALSE, graphs=FALSE)
 {
   # Inputs:
   # data: Matrix for the SVM
@@ -239,6 +239,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # outWD: name of Output Working directory
   # mainWD: name of main WD
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
+  # no.graphs: Logical, if TRUE no graphs will be produced
   
   # Initialise variables for best error and best model
   best_model <- NULL
@@ -293,7 +294,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             model <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
                           kpar=kp, C=C[j], epsilon=epsilon[k],
                           cross=cross)
-            
+
             # Create objects to include in results Table
             tr_error <- error(model)
             tr_pred <- predict(model, Xtr)
@@ -303,68 +304,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             sig_val <- kpar(kernelf(model))$sigma
             link_name <- colnames(data)[col[b]]
             minutes <- (m[a])*5
-            
-            # Create and save graphs
-            obs_values_tr <- data.frame(ytr, "Observed", 1:length(ytr))
-            colnames(obs_values_tr) <- c("value", "class", "time")
-            pred_values_tr <- data.frame(tr_pred, "Predicted", 1:length(tr_pred))
-            colnames(pred_values_tr) <- c("value", "class", "time")
-            
-            trainval_df <- rbind(obs_values_tr, pred_values_tr)
-            trainval_df_one <- subset(trainval_df, time %in% c(1:181))
-            
-            obs_values_ts <- data.frame(yts, "Observed", 1:length(yts))
-            colnames(obs_values_ts) <- c("value", "class", "time")
-            pred_values_ts <- data.frame(ts_pred, "Predicted", 1:length(ts_pred))
-            colnames(pred_values_ts) <- c("value", "class", "time")
-            
-            testval_df <- rbind(obs_values_ts, pred_values_ts)
-            testval_df_one <- subset(testval_df, time %in% c(1:181))
-            
-            p1 <- ggplot(data=trainval_df, aes(x=time, y=value, colour=class, 
-                                               linetype=class))+
-              geom_line(size=0.4) +
-              scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-              ggtitle(paste(minutes, " mins. ", link_name,". " ,"Training set: Model ", 
-                            ind, sep="")) +
-              xlab("") + ylab("Seconds per metre") +
-              theme(legend.title=element_blank())
-            
-            p2 <- ggplot(data=trainval_df_one,
-                         aes(x=time, y=value, colour=class, linetype=class))+
-              geom_line(size=0.4) +
-              scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-              ggtitle(paste(minutes, " mins. ", link_name,". " 
-                            ,"One Day Training set: Model ",ind, sep="")) +
-              xlab("") + ylab("Seconds per metre") +
-              theme(legend.title=element_blank())
-            
-            p3 <- ggplot(data=testval_df, aes(x=time, y=value, colour=class, 
-                                              linetype=class))+
-              geom_line(size=0.4) +
-              scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-              ggtitle(paste(minutes, " mins. ", link_name,". " ,"Testing set: Model ",
-                            ind, sep="")) +
-              xlab("") + ylab("Seconds per metre") +
-              theme(legend.title=element_blank())
-            
-            p4 <- ggplot(data=testval_df_one,
-                         aes(x=time, y=value, colour=class, linetype=class))+
-              geom_line(size=0.4) +
-              scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-              ggtitle(paste(minutes, " mins. ", link_name,". " ,
-                            "One Day Testing set: Model ", ind, sep="")) +
-              xlab("") + ylab("Seconds per metre") +
-              theme(legend.title=element_blank())
-            
-            file <- paste(minutes, "mins", "_", link_name, "_", "Model", 
-                          ind, ".pdf", sep="")
-            
-            setwd(outWD)
-            pdf(file, width=11.7, height=8.3)
-            multiplot(p1, p2, p3, p4, cols=2)
-            dev.off()
-            setwd(mainWD)
             
             # Add data to results table
             svm_results[ind,1] <- ind
@@ -376,6 +315,78 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             svm_results[ind,7] <- tr_error
             svm_results[ind,8] <- tr_rmse
             svm_results[ind,9] <- ts_rmse
+            
+            
+            if (graphs==TRUE)
+            {
+              # Create and save graphs
+              obs_values_tr <- data.frame(ytr, "Observed", 1:length(ytr))
+              colnames(obs_values_tr) <- c("value", "class", "time")
+              pred_values_tr <- data.frame(tr_pred, "Predicted", 1:length(tr_pred))
+              colnames(pred_values_tr) <- c("value", "class", "time")
+              
+              trainval_df <- rbind(obs_values_tr, pred_values_tr)
+              trainval_df_one <- subset(trainval_df, time %in% c(1:181))
+              
+              obs_values_ts <- data.frame(yts, "Observed", 1:length(yts))
+              colnames(obs_values_ts) <- c("value", "class", "time")
+              pred_values_ts <- data.frame(ts_pred, "Predicted", 1:length(ts_pred))
+              colnames(pred_values_ts) <- c("value", "class", "time")
+              
+              testval_df <- rbind(obs_values_ts, pred_values_ts)
+              testval_df_one <- subset(testval_df, time %in% c(1:181))
+              
+              p1 <- ggplot(data=trainval_df, aes(x=time, y=value, colour=class, 
+                                                 linetype=class))+
+                geom_line(size=0.4) +
+                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                ggtitle(paste(minutes, " mins. ", link_name,". " ,"Training set: Model ", 
+                              ind, sep="")) +
+                xlab("") + ylab("Seconds per metre") +
+                theme(legend.title=element_blank())
+              
+              p2 <- ggplot(data=trainval_df_one,
+                           aes(x=time, y=value, colour=class, linetype=class))+
+                geom_line(size=0.4) +
+                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                ggtitle(paste(minutes, " mins. ", link_name,". " 
+                              ,"One Day Training set: Model ",ind, sep="")) +
+                xlab("") + ylab("Seconds per metre") +
+                theme(legend.title=element_blank())
+              
+              p3 <- ggplot(data=testval_df, aes(x=time, y=value, colour=class, 
+                                                linetype=class))+
+                geom_line(size=0.4) +
+                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                ggtitle(paste(minutes, " mins. ", link_name,". " ,"Testing set: Model ",
+                              ind, sep="")) +
+                xlab("") + ylab("Seconds per metre") +
+                theme(legend.title=element_blank())
+              
+              p4 <- ggplot(data=testval_df_one,
+                           aes(x=time, y=value, colour=class, linetype=class))+
+                geom_line(size=0.4) +
+                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                ggtitle(paste(minutes, " mins. ", link_name,". " ,
+                              "One Day Testing set: Model ", ind, sep="")) +
+                xlab("") + ylab("Seconds per metre") +
+                theme(legend.title=element_blank())
+              
+              file <- paste(minutes, "mins", "_", link_name, "_", "Model", 
+                            ind, ".pdf", sep="")
+              
+              setwd(outWD)
+              pdf(file, width=11.7, height=8.3)
+              multiplot(p1, p2, p3, p4, cols=2)
+              dev.off()
+              setwd(mainWD)
+            }
+            
+            else
+            {
+              
+            }
+            
             
             if(tr_error < best_error)
             {
@@ -415,72 +426,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               link_name <- colnames(data)[col[b]]
               minutes <- (m[a])*5
               
-              # Create and save graphs
-              obs_values_tr <- data.frame(ytr, "Observed", 1:length(ytr))
-              colnames(obs_values_tr) <- c("value", "class", "time")
-              pred_values_tr <- data.frame(tr_pred, "Predicted", 1:length(tr_pred))
-              colnames(pred_values_tr) <- c("value", "class", "time")
-              
-              trainval_df <- rbind(obs_values_tr, pred_values_tr)
-              trainval_df_one <- subset(trainval_df, time %in% c(1:181))
-              
-              obs_values_ts <- data.frame(yts, "Observed", 1:length(yts))
-              colnames(obs_values_ts) <- c("value", "class", "time")
-              pred_values_ts <- data.frame(ts_pred, "Predicted", 1:length(ts_pred))
-              colnames(pred_values_ts) <- c("value", "class", "time")
-              
-              testval_df <- rbind(obs_values_ts, pred_values_ts)
-              testval_df_one <- subset(testval_df, time %in% c(1:181))
-              
-              p1 <- ggplot(data=trainval_df, aes(x=time, y=value, colour=class, 
-                                                 linetype=class))+
-                geom_line(size=0.4) +
-                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-                ggtitle(paste(minutes, " mins. ", link_name,". " ,"Training set: Model ", 
-                              ind,  ", Sigma: ", 
-                              sig_val, sep="")) +
-                xlab("") + ylab("Seconds per metre") +
-                theme(legend.title=element_blank())
-              
-              p2 <- ggplot(data=trainval_df_one,
-                           aes(x=time, y=value, colour=class, linetype=class))+
-                geom_line(size=0.4) +
-                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-                ggtitle(paste(minutes, " mins. ", link_name,". " ,
-                              "One Day Training set: Model ", ind, ", Sigma: ", 
-                              sig_val, sep="")) +
-                xlab("") + ylab("Seconds per metre") +
-                theme(legend.title=element_blank())
-              
-              p3 <- ggplot(data=testval_df, aes(x=time, y=value, colour=class, 
-                                                linetype=class))+
-                geom_line(size=0.4) +
-                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-                ggtitle(paste(minutes, " mins. ", link_name,". " ,"Testing set: Model ",
-                              ind, ", Sigma: ", 
-                              sig_val, sep="")) +
-                xlab("") + ylab("Seconds per metre") +
-                theme(legend.title=element_blank())
-              
-              p4 <- ggplot(data=testval_df_one,
-                           aes(x=time, y=value, colour=class, linetype=class))+
-                geom_line(size=0.4) +
-                scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
-                ggtitle(paste(minutes, " mins. ", link_name,". " ,
-                              "One Day Testing set: Model ", ind, ", Sigma: ", 
-                              sig_val, sep="")) +
-                xlab("") + ylab("Seconds per metre") +
-                theme(legend.title=element_blank())
-              
-              file <- paste(minutes, "mins", "_sig", sig_val, "_", link_name, "_", "Model", 
-                            ind, ".pdf", sep="")
-              
-              setwd(outWD)
-              pdf(file, width=11.7, height=8.3)
-              multiplot(p1, p2, p3, p4, cols=2)
-              dev.off()
-              setwd(mainWD)
-              
               # Add data to results table
               svm_results[ind,1] <- ind
               svm_results[ind,2] <- minutes
@@ -491,6 +436,77 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               svm_results[ind,7] <- tr_error
               svm_results[ind,8] <- tr_rmse
               svm_results[ind,9] <- ts_rmse
+              
+              if (graphs==TRUE)
+              {
+                # Create and save graphs
+                obs_values_tr <- data.frame(ytr, "Observed", 1:length(ytr))
+                colnames(obs_values_tr) <- c("value", "class", "time")
+                pred_values_tr <- data.frame(tr_pred, "Predicted", 1:length(tr_pred))
+                colnames(pred_values_tr) <- c("value", "class", "time")
+                
+                trainval_df <- rbind(obs_values_tr, pred_values_tr)
+                trainval_df_one <- subset(trainval_df, time %in% c(1:181))
+                
+                obs_values_ts <- data.frame(yts, "Observed", 1:length(yts))
+                colnames(obs_values_ts) <- c("value", "class", "time")
+                pred_values_ts <- data.frame(ts_pred, "Predicted", 1:length(ts_pred))
+                colnames(pred_values_ts) <- c("value", "class", "time")
+                
+                testval_df <- rbind(obs_values_ts, pred_values_ts)
+                testval_df_one <- subset(testval_df, time %in% c(1:181))
+                
+                p1 <- ggplot(data=trainval_df, aes(x=time, y=value, colour=class, 
+                                                   linetype=class))+
+                  geom_line(size=0.4) +
+                  scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                  ggtitle(paste(minutes, " mins. ", link_name,". " ,"Training set: Model ", 
+                                ind, sep="")) +
+                  xlab("") + ylab("Seconds per metre") +
+                  theme(legend.title=element_blank())
+                
+                p2 <- ggplot(data=trainval_df_one,
+                             aes(x=time, y=value, colour=class, linetype=class))+
+                  geom_line(size=0.4) +
+                  scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                  ggtitle(paste(minutes, " mins. ", link_name,". " 
+                                ,"One Day Training set: Model ",ind, sep="")) +
+                  xlab("") + ylab("Seconds per metre") +
+                  theme(legend.title=element_blank())
+                
+                p3 <- ggplot(data=testval_df, aes(x=time, y=value, colour=class, 
+                                                  linetype=class))+
+                  geom_line(size=0.4) +
+                  scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                  ggtitle(paste(minutes, " mins. ", link_name,". " ,"Testing set: Model ",
+                                ind, sep="")) +
+                  xlab("") + ylab("Seconds per metre") +
+                  theme(legend.title=element_blank())
+                
+                p4 <- ggplot(data=testval_df_one,
+                             aes(x=time, y=value, colour=class, linetype=class))+
+                  geom_line(size=0.4) +
+                  scale_color_manual(values=c("Observed"="black", "Predicted"="red")) +
+                  ggtitle(paste(minutes, " mins. ", link_name,". " ,
+                                "One Day Testing set: Model ", ind, sep="")) +
+                  xlab("") + ylab("Seconds per metre") +
+                  theme(legend.title=element_blank())
+                
+                file <- paste(minutes, "mins", "_", link_name, "_", "Model", 
+                              ind, ".pdf", sep="")
+                
+                setwd(outWD)
+                pdf(file, width=11.7, height=8.3)
+                multiplot(p1, p2, p3, p4, cols=2)
+                dev.off()
+                setwd(mainWD)
+              }
+              
+              else
+              {
+                
+              }
+              
               
               if(tr_error < best_error)
               {
