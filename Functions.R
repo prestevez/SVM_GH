@@ -287,8 +287,18 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               kp <- "automatic"
               
               # Embed the time series
-              st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii, 
-                                  interval=interval[c])
+              if (isnull(interval))
+              {
+                st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
+              }
+              
+              else
+              {
+                st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii, 
+                                    interval=interval[c])
+                
+                svm_results[ind,10] <- interval[c]
+              }
               
               # Separate the embedded time series in training and validation data
               Xtr <- st_data$X[1:trainp]
@@ -320,7 +330,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               svm_results[ind,7] <- tr_error
               svm_results[ind,8] <- tr_rmse
               svm_results[ind,9] <- ts_rmse
-              svm_results[ind,10] <- interval[c]
+              svm_results[ind,10] <- NA
               
               
               if (graphs==TRUE)
@@ -410,8 +420,18 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 kp <- list(sigma=sig[i])
                 
                 # Embed the time series
-                st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii,
-                                    interval=interval[c])
+                if (isnull(interval))
+                {
+                  st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
+                }
+                
+                else
+                {
+                  st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii, 
+                                      interval=interval[c])
+                  
+                  svm_results[ind,10] <- interval[c]
+                }
                 
                 # Separate the embedded time series in training and validation data
                 Xtr <- st_data$X[1:trainp]
@@ -443,7 +463,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 svm_results[ind,7] <- tr_error
                 svm_results[ind,8] <- tr_rmse
                 svm_results[ind,9] <- ts_rmse
-                svm_results[ind,10] <- interval[c]
+                svm_results[ind,10] <- NA
                 
                 if (graphs==TRUE)
                 {
