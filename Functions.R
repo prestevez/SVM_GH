@@ -253,6 +253,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                             "C"=0, "Epsilon"=0, "Train Error"=0, "Residual Error"=0,
                             "Predicted Error"=0, "Interval"=0)
   
+  colnames(svm_results)[7:9] <- c("Training Error" ,"Resiudal Error",
+                                  "Predicted Error") 
+  
   # If NRMSE is TRUE
   
   if (nrmse==TRUE)
