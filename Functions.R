@@ -239,7 +239,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # outWD: name of Output Working directory
   # mainWD: name of main WD
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
-  # graphs: Logical, if TRUE no graphs will be produced
+  # graphs: Logical, if TRUE graphs will be produced
   
   # Initialise variables for best error and best model
   best_model <- NULL
