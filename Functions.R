@@ -287,7 +287,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               kp <- "automatic"
               
               # Embed the time series
-              if (isnull(interval))
+              if (is.null(interval))
               {
                 st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
               }
@@ -420,7 +420,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 kp <- list(sigma=sig[i])
                 
                 # Embed the time series
-                if (isnull(interval))
+                if (is.null(interval))
                 {
                   st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
                 }
