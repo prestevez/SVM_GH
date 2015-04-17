@@ -250,7 +250,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   res.error <- "Residual Error"
   pred.error <- "Predicted Error"
   
-  if (rmse=TRUE)
+  if (rmse==TRUE)
   {
     rmse <- nrmse
     res.error <- "Standard Residual Error"
