@@ -10,3 +10,5 @@ GraphicOutput
 03_Analysis_Results_Local.R
 Runfile_Local.R
 GraphicOutput Full
+reset.sink.run.R
+.Rapp.history
