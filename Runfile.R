@@ -5,6 +5,7 @@
 source("01_Setup.R")
 source("02_Read_data.R")
 source("Functions.R")
+source("reset.sink.R")
 
 logfile <- file("results.txt")
 
@@ -21,6 +22,8 @@ source("03_Analysis_Results.R", echo=TRUE, max.deparse.length=10000)
 
 # Ends sink
 sink()
+
+sink.reset()
 
 ## End of Runfile.R
 
