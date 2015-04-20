@@ -9,6 +9,7 @@ setwd(mainWD)
 # Best results table
 
 res.table <- svm_search_nrmse$svm_results
+colnames(res.table)[8] <- "Standard Residual Error"
 
 temp <- res.table[,c(1:4, 7:9)]
 temp.m <- temp[1,]
