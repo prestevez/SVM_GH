@@ -550,11 +550,13 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
     xres <- "Residual Errors"
     yres <- "Predicted Errors"
+    rmlab <- "RMSE"
 
     if (nrmse==TRUE)
     {
       xres <- "Standard Residual Errors"
       yres <- "Standard Predicted Errors"
+      rmlab <- "NRMSE"
     }
 
     ep1 <- qplot(err, pre, data=best_results, xlab=xres, ylab=yres) +
@@ -564,17 +566,32 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             ggtitle("SVR Models: Errors Summary")
 
 
-#### Modify to fit function
-    res.plot <- data.frame(best_results[,7])
-    res.plot[,2] <- "Training Errors"
+    nrmse.plot <- best_results[,8]
+    nrmse.plot[,2] <- xres
 
-    res.plot[23:44,1] <- best_results[,8]
-    res.plot[23:44,2] - xres
+    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,9]
+    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),2] <- yres
 
-    res.plot[45:66,1] <- best_results[,8]
-    res.plot[45:66,2] <- yres
+    colnames(nrmse.plot) <- c("values", "type")
 
-    
+    ep3 <- qplot(type, values, data=nrmse.plot, geom="boxplot", ylab=rmlab, xlab="")+
+            ggtitle("SVR Models: Errors Summary")
+
+
+    terr.plot <- data.frame(best_results[,7])
+    terr.plot[,2] <- "Training Errors"
+    colnames(terr.plot) <- c("values", "type")
+
+    ep4 <- qplot(type, value, data=terr.plot, geom="boxplot", ylab="Training Errors",
+            xlab="") + ggtitle("SVR Models: Errors Summary")
+
+    errplotfile <- paste("errorplots", length(col), "_links", ".pdf", sep="")
+
+    setwd(outWD)
+    pdf(errplotfile, width=11.7, height=8.3)
+    multiplot(ep1, ep3, ep2, ep4, cols=2)
+    dev.off()
+    setwd(mainWD)
   }
 
   # Print results at prompt
