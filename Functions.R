@@ -224,7 +224,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
                      trainp=NULL, outWD=NULL, mainWD=NULL, 
-                     nrmse=FALSE, graphs=FALSE)
+                     nrmse=FALSE, graphs=FALSE, save=FALSE)
 {
   # Inputs:
   # data: Matrix for the SVM
@@ -300,9 +300,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             # Create objects to include in results Table
             tr_error <- error(model)
             tr_pred <- predict(model, Xtr)
-            tr_rmse <- rmse(tr_pred, ytr)
+            tr_rmse <- rmse(pred=tr_pred, obs=ytr)
             ts_pred <- predict(model, Xts)
-            ts_rmse <- rmse(yts, ts_pred)
+            ts_rmse <- rmse(obs=yts, pred=ts_pred)
             sig_val <- kpar(kernelf(model))$sigma
             link_name <- colnames(data)[col[b]]
             minutes <- (m[a])*5
@@ -318,7 +318,14 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             svm_results[ind,8] <- tr_rmse
             svm_results[ind,9] <- ts_rmse
             
+            # Save objects
+            if (save==TRUE)
+            {
+              assign(paste("pred.model", ind, sep=""), ts_pred)
+              assign(paste("model", ind, sep=""), model)
+            }
             
+            # Graphs
             if (graphs==TRUE)
             {
               # Create and save graphs
@@ -384,12 +391,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               setwd(mainWD)
             }
             
-            else
-            {
-              
-            }
-            
-            
             if(tr_error < best_error)
             {
               best_error <- tr_error
@@ -421,9 +422,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               # Create objects to include in results Table
               tr_error <- error(model)
               tr_pred <- predict(model, Xtr)
-              tr_rmse <- rmse(tr_pred, ytr)
+              tr_rmse <- rmse(pred=tr_pred, obs=ytr)
               ts_pred <- predict(model, Xts)
-              ts_rmse <- rmse(yts, ts_pred)
+              ts_rmse <- rmse(obs=yts, pred=ts_pred)
               sig_val <- kpar(kernelf(model))$sigma
               link_name <- colnames(data)[col[b]]
               minutes <- (m[a])*5
@@ -438,6 +439,13 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               svm_results[ind,7] <- tr_error
               svm_results[ind,8] <- tr_rmse
               svm_results[ind,9] <- ts_rmse
+              
+              # Save objects
+              if (save==TRUE)
+              {
+                assign(paste("pred.model", ind, sep=""), ts_pred)
+                assign(paste("model", ind, sep=""), model)
+              }
               
               if (graphs==TRUE)
               {
