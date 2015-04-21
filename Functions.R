@@ -260,7 +260,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   
   if (nrmse==TRUE)
   {
-    rmse <- nrmse
+    rmse <- NRMSE
     
     # Modify data frame to store results
     colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error") 
