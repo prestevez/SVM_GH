@@ -29,6 +29,8 @@ m60 <- 12
 
 trainp <- 181*154
 
+
+ptm <- proc.time() # to measure processing time
 ## for 60 mins
 # Cycle through parameters
 for (b in 1:length(links60))
@@ -106,6 +108,8 @@ for (b in 1:length(links5))
   assign(paste("test.nrmse", links5[b], sep=""), NRMSE(yts, ts_pred))
   
 }
+
+finaltime <- proc.time() - ptm # Processing time
 
 setwd(dirRdata)
 save.image(file="SVM_GH.RData", safe=TRUE)

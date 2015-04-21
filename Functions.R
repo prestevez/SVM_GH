@@ -511,13 +511,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 dev.off()
                 setwd(mainWD)
               }
-              
-              else
-              {
-                
-              }
-              
-              
+   
               if(tr_error < best_error)
               {
                 best_error <- tr_error
@@ -527,7 +521,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               ind <- ind + 1
             }
           }
-          #           ind <- ind+1
         }
       }
     } 

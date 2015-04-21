@@ -8,7 +8,7 @@ setwd(mainWD)
 
 # Best results table
 
-res.table <- svm_search_nrmse$svm_results
+res.table <- svm_search_21march$svm_results
 colnames(res.table)[8] <- "Standard Residual Error"
 
 temp <- res.table[,c(1:4, 7:9)]
@@ -97,7 +97,7 @@ plot.nrmse <- qplot(type, values, data=res.plot[19:54,], geom="boxplot",
 plot.terr <- qplot(type, values, data=res.plot[1:18,], geom="boxplot",
                    ylab="Training Errors", xlab="") + ggtitle("SVR Models: Errors Summary")
 
-fileplot <- "errorplots.pdf"
+fileplot <- "errorplots21march.pdf"
 
 setwd(dirRoutput)
 pdf(fileplot, width=11.7, height=8.3)
@@ -111,8 +111,8 @@ setwd(mainWD)
 setwd(dirRdata)
 
 save.image(file="SVM_GH.RData", safe=TRUE)
-save(res.table, results.summary, results.summary.real, model.errors, model.errors.real,
-     file="resultstables.RData")
+# save(res.table, results.summary, results.summary.real, model.errors, model.errors.real,
+#      file="resultstables.RData")
 
 # Return to mainWD
 setwd(mainWD)
