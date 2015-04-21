@@ -563,7 +563,18 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors",) +
             ggtitle("SVR Models: Errors Summary")
 
-    res.plot
+
+#### Modify to fit function
+    res.plot <- data.frame(best_results[,7])
+    res.plot[,2] <- "Training Errors"
+
+    res.plot[23:44,1] <- best_results[,8]
+    res.plot[23:44,2] - xres
+
+    res.plot[45:66,1] <- best_results[,8]
+    res.plot[45:66,2] <- yres
+
+    
   }
 
   # Print results at prompt
