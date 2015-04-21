@@ -243,10 +243,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # graphs: Logical, if TRUE graphs will be produced
   # errplot: Logical, if TRUE graphs for error rates will be produced
 
-  # Initialise variables for best error and best model
-  best_model <- NULL
-  best_error <- 1000000
-  best_time <- NULL
 
   # Create empty data frame to store results
 
@@ -402,12 +398,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               setwd(mainWD)
             }
 
-            if(tr_error < best_error)
-            {
-              best_error <- tr_error
-              best_model <- model
-              best_time <- paste(minutes, "minutes", sep=" ")
-            }
+
             ind <- ind + 1
           }
 
@@ -523,12 +514,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 setwd(mainWD)
               }
 
-              if(tr_error < best_error)
-              {
-                best_error <- tr_error
-                best_model <- model
-                best_time <- paste(minutes, "minutes", sep=" ")
-              }
+
               ind <- ind + 1
             }
           }
@@ -544,8 +530,22 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     best_results <- best_results[which(best_results[,7]==min(best_results[,7])),]
   }
 
-  return(list(best_model=best_model, best_error=best_error, best_time=best_time,
-              svm_results=svm_results, best_results=best_results))
+  # Create average error table
+  mean.errors <- best_results[1,7:9]
+  mean.errors <- mean.errors[-1,]
+
+  for (e in 1:3)
+  {
+    mean.errors[1,e] <- mean(best.results[,6+e])
+  }
+
+  rownames(mean.errors) <- "Average"
+
+  if (errplot==TRUE)
+
+  # Print results at prompt
+  return(list(svm_results=svm_results, best_results=best_results,
+              mean_errors=mean_errors))
 
 }
 
