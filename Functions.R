@@ -531,17 +531,40 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   }
 
   # Create average error table
-  mean.errors <- best_results[1,7:9]
-  mean.errors <- mean.errors[-1,]
+  mean_errors <- best_results[1,7:9]
+  mean_errors <- mean.errors[-1,]
 
   for (e in 1:3)
   {
-    mean.errors[1,e] <- mean(best.results[,6+e])
+    mean_errors[1,e] <- mean(best_results[,6+e])
   }
 
   rownames(mean.errors) <- "Average"
 
+  # Plot mean errors of best models
   if (errplot==TRUE)
+  {
+    tr <- best_results[,7]
+    err <-best_results[,8]
+    pre <-best_results[,9]
+
+    xres <- "Residual Errors"
+    yres <- "Predicted Errors"
+
+    if (nrmse==TRUE)
+    {
+      xres <- "Standard Residual Errors"
+      yres <- "Standard Predicted Errors"
+    }
+
+    ep1 <- qplot(err, pre, data=best_results, xlab=xres, ylab=yres) +
+            ggtitle("SVR Models: Errors Summary")
+
+    ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors",) +
+            ggtitle("SVR Models: Errors Summary")
+
+    res.plot
+  }
 
   # Print results at prompt
   return(list(svm_results=svm_results, best_results=best_results,
