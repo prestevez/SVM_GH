@@ -224,7 +224,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
                      trainp=NULL, outWD=NULL, mainWD=NULL,
-                     nrmse=FALSE, graphs=FALSE, save=FALSE)
+                     nrmse=FALSE, graphs=FALSE, save=FALSE,
+                     errplot=FALSE)
 {
   # Inputs:
   # data: Matrix for the SVM
@@ -240,6 +241,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # mainWD: name of main WD
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
   # graphs: Logical, if TRUE graphs will be produced
+  # errplot: Logical, if TRUE graphs for error rates will be produced
 
   # Initialise variables for best error and best model
   best_model <- NULL
@@ -264,6 +266,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   colnames(best_results)[7:9] <- c("Training Error" ,"Residual Error",
                                                             "Predicted Error")
 
+  link.names <- colnames(data)
+
+
   # If NRMSE is TRUE
 
   if (nrmse==TRUE)
@@ -274,7 +279,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
     colnames(best_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
   }
-
 
 
   ind <- 1
@@ -533,8 +537,15 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     }
   }
 
+  # Select best results into a data frame
+  for (g in 1:length(link.names))
+  {
+    best_results <- subset(svm_results, Link=link.names[g])
+    best_results <- best_results[which(best_results[,7]==min(best_results[,7])),]
+  }
+
   return(list(best_model=best_model, best_error=best_error, best_time=best_time,
-              svm_results=svm_results))
+              svm_results=svm_results, best_results=best_results))
 
 }
 
