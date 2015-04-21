@@ -254,7 +254,15 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
   colnames(svm_results)[7:9] <- c("Training Error" ,"Residual Error",
                                   "Predicted Error")
-  
+
+  # Create empty data frame to store best results
+
+  best_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
+                            "C"=0, "Epsilon"=0, "Train Error"=0, "Residual Error"=0,
+                            "Predicted Error"=0)
+
+  colnames(best_results)[7:9] <- c("Training Error" ,"Residual Error",
+                                                            "Predicted Error")
 
   # If NRMSE is TRUE
 
@@ -264,11 +272,10 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
     # Modify data frame to store results
     colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
+    colnames(best_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
   }
-  else
-  {
 
-  }
+
 
   ind <- 1
   # Cycle through parameters
