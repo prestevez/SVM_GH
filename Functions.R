@@ -279,8 +279,8 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
     colnames(best_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
   }
-
-
+  
+  
   ind <- 1
   # Cycle through parameters
   for (a in 1:length(m))
@@ -329,11 +329,11 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             svm_results[ind,8] <- tr_rmse
             svm_results[ind,9] <- ts_rmse
 
-            # Save objects
+            # Save objects in the global environment using envir=globalenv()
             if (save==TRUE)
             {
-              assign(paste("pred.model", ind, sep=""), ts_pred)
-              assign(paste("model", ind, sep=""), model)
+              assign(paste("pred.model", ind, sep=""), ts_pred, envir=globalenv())
+              assign(paste("model", ind, sep=""), model, envir=globalenv())
             }
 
             # Graphs
@@ -594,7 +594,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     ep4 <- qplot(type, values, data=terr.plot, geom="boxplot", ylab="Training Errors",
             xlab="") + ggtitle("SVR Models: Errors Summary")
 
-    errplotfile <- paste("errorplots", length(col), "_links", ".pdf", sep="")
+    errplotfile <- paste("errorplots_", length(col), "_links", ".pdf", sep="")
 
     setwd(outWD)
     pdf(errplotfile, width=11.7, height=8.3)
