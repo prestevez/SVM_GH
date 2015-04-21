@@ -575,7 +575,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             ggtitle("SVR Models: Errors Summary")
 
 
-    nrmse.plot <- best_results[,8]
+    nrmse.plot <- data.frame(best_results[,8])
     nrmse.plot[,2] <- xres
 
     nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,9]
@@ -591,7 +591,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     terr.plot[,2] <- "Training Errors"
     colnames(terr.plot) <- c("values", "type")
 
-    ep4 <- qplot(type, value, data=terr.plot, geom="boxplot", ylab="Training Errors",
+    ep4 <- qplot(type, values, data=terr.plot, geom="boxplot", ylab="Training Errors",
             xlab="") + ggtitle("SVR Models: Errors Summary")
 
     errplotfile <- paste("errorplots", length(col), "_links", ".pdf", sep="")
