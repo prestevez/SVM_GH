@@ -262,6 +262,10 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   colnames(best_results)[7:9] <- c("Training Error" ,"Residual Error",
                                                             "Predicted Error")
 
+  # Create mean_errors data frame
+  mean_errors <- data.frame("Training Error"=0, "Residual Error"=0, "Predicted Error"=0)
+
+  # For best_results table
   link.names <- colnames(data)
 
 
@@ -530,9 +534,14 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     best_results <- best_results[which(best_results[,7]==min(best_results[,7])),]
   }
 
-  # Create average error table
-  mean_errors <- best_results[1,7:9]
-  mean_errors <- mean.errors[-1,]
+#  # Create average error table
+#  mean_errors <- best_results[1,7:9]
+#  mean_errors <- mean.errors[-1,]
+
+  if (nrmse==TRUE)
+  {
+    colnames(mean_errors)[2:3] <- c("Standard Residual Errors", "Standard Predicted Errors")
+  }
 
   for (e in 1:3)
   {
