@@ -536,7 +536,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
 #  # Create average error table
 #  mean_errors <- best_results[1,7:9]
-#  mean_errors <- mean.errors[-1,]
+#  mean_errors <- mean_errors[-1,]
 
   if (nrmse==TRUE)
   {
@@ -548,7 +548,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     mean_errors[1,e] <- mean(best_results[,6+e])
   }
 
-  rownames(mean.errors) <- "Average"
+  rownames(mean_errors) <- "Average"
 
   # Plot mean errors of best models
   if (errplot==TRUE)
