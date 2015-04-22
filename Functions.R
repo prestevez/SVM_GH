@@ -299,9 +299,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
 
             # Separate the embedded time series in training and validation data
-            Xtr <- st_data$X[1:trainp]
+            Xtr <- st_data$X[1:trainp,]
             ytr <- st_data$y[1:trainp]
-            Xts <- st_data$X[(trainp+1):nrow(st_data$X)]
+            Xts <- st_data$X[(trainp+1):nrow(st_data$X),]
             yts <- st_data$y[(trainp+1):nrow(st_data$y)]
 
             model <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
@@ -416,9 +416,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
 
               # Separate the embedded time series in training and validation data
-              Xtr <- st_data$X[1:trainp]
+              Xtr <- st_data$X[1:trainp,]
               ytr <- st_data$y[1:trainp]
-              Xts <- st_data$X[(trainp+1):nrow(st_data$X)]
+              Xts <- st_data$X[(trainp+1):nrow(st_data$X),]
               yts <- st_data$y[(trainp+1):nrow(st_data$y)]
 
               model <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
