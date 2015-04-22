@@ -536,13 +536,13 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   for (g in 1:length(link.names))
   {
     temp <- subset(svm_results, Link=link.names[g])
-    best_results[g,] <- best_results[which(temp[,7]==min(temp[,7])),]
+    best_results[g,] <- best_results[which(temp[,8]==min(temp[,8])),]
     rm(temp)
   }
 
   for (e in 1:3)
   {
-    mean_errors[1,e] <- mean(best_results[,6+e])
+    mean_errors[1,e] <- mean(best_results[,7+e])
   }
 
   rownames(mean_errors) <- "Average"
@@ -550,9 +550,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # Plot mean errors of best models
   if (errplot==TRUE)
   {
-    tr <- best_results[,7]
-    err <-best_results[,8]
-    pre <-best_results[,9]
+    tr <- best_results[,8]
+    err <-best_results[,9]
+    pre <-best_results[,10]
 
     xres <- "Residual RMSE"
     yres <- "Predicted RMSE"
@@ -572,10 +572,10 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             ggtitle("SVR Models: Errors Summary")
 
 
-    nrmse.plot <- data.frame(best_results[,8])
+    nrmse.plot <- data.frame(best_results[,9])
     nrmse.plot[,2] <- xres
 
-    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,9]
+    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,10]
     nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),2] <- yres
 
     colnames(nrmse.plot) <- c("values", "type")
@@ -584,14 +584,15 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             ggtitle("SVR Models: Errors Summary")
 
 
-    terr.plot <- data.frame(best_results[,7])
+    terr.plot <- data.frame(best_results[,8])
     terr.plot[,2] <- "Training Errors"
     colnames(terr.plot) <- c("values", "type")
 
     ep4 <- qplot(type, values, data=terr.plot, geom="boxplot", ylab="Training Errors",
             xlab="") + ggtitle("SVR Models: Errors Summary")
 
-    errplotfile <- paste("errorplots_", length(col), "_links", ".pdf", sep="")
+    errplotfile <- paste("errorplots_", length(col), "_links_",
+                          length(interval), "_inter", ".pdf", sep="")
 
     setwd(outWD)
     pdf(errplotfile, width=11.7, height=8.3)
