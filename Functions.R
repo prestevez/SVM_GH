@@ -251,10 +251,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                             "Predicted RMSE"=0)
 
   # Create empty data frame to store best results
-  best_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Interval"=0, "Sigma"=0,
-                            "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
-                            "Predicted RMSE"=0)
-
+  best_results <- svm_results[1,]
+  best_results <- best_results[-1,]
+  
   # Create mean_errors data frame
   mean_errors <- data.frame("Training Error"=0, "Residual RMSE"=0, "Predicted RMSE"=0)
 
