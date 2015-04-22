@@ -229,14 +229,14 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 {
   # Inputs:
   # data: Matrix for the SVM
-  # m: Number of past observation to embed
+  # m: Number of past observations to embed
   # col: columns in the data
   # W: Weight matrix
   # ii: leave at TRUE
   # C: Penalisation constant
   # epsilon: width of epsilon tube
   # cross: number of folds for k-fold cross validation
-  # trainp: Training period
+  # trainp: Training period MUST MAKE THIS FLEXIBLE
   # outWD: name of Output Working directory
   # mainWD: name of main WD
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
@@ -246,12 +246,12 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
 
   # Create empty data frame to store results
-  svm_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
+  svm_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Interval"=0, "Sigma"=0,
                             "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
                             "Predicted RMSE"=0)
 
   # Create empty data frame to store best results
-  best_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
+  best_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Interval"=0, "Sigma"=0,
                             "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
                             "Predicted RMSE"=0)
 
@@ -269,11 +269,12 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     rmse <- NRMSE
 
     # Modify data frame to store results
-    colnames(svm_results)[8:9] <- c("Residual NRMSE", "Predicted NRMSE")
-    colnames(best_results)[8:9] <- c("Residual NRMSE", "Predicted NRMSE")
+    colnames(svm_results)[9:10] <- c("Residual NRMSE", "Predicted NRMSE")
+    colnames(best_results)[9:10] <- c("Residual NRMSE", "Predicted NRMSE")
     colnames(mean_errors)[2:3] <- c("Residual NRMSE", "Predicted NRMSE")
   }
 
+  
 
   ind <- 1
   # Cycle through parameters
@@ -316,12 +317,13 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             svm_results[ind,1] <- ind
             svm_results[ind,2] <- minutes
             svm_results[ind,3] <- link_name
-            svm_results[ind,4] <- sig_val
-            svm_results[ind,5] <- C[j]
-            svm_results[ind,6] <- epsilon[k]
-            svm_results[ind,7] <- tr_error
-            svm_results[ind,8] <- tr_rmse
-            svm_results[ind,9] <- ts_rmse
+            svm_results[ind,4] <- interval
+            svm_results[ind,5] <- sig_val
+            svm_results[ind,6] <- C[j]
+            svm_results[ind,7] <- epsilon[k]
+            svm_results[ind,8] <- tr_error
+            svm_results[ind,9] <- tr_rmse
+            svm_results[ind,10] <- ts_rmse
 
             # Save objects in the global environment using envir=globalenv()
             if (save==TRUE)
