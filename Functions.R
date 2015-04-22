@@ -296,7 +296,8 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               kp <- "automatic"
 
               # Embed the time series
-              st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
+              st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii,
+                                  interval=interval[h])
 
               # Separate the embedded time series in training and validation data
               Xtr <- st_data$X[1:trainp,]
@@ -322,7 +323,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
               svm_results[ind,1] <- ind
               svm_results[ind,2] <- minutes
               svm_results[ind,3] <- link_name
-              svm_results[ind,4] <- interval
+              svm_results[ind,4] <- interval[h]
               svm_results[ind,5] <- sig_val
               svm_results[ind,6] <- C[j]
               svm_results[ind,7] <- epsilon[k]
@@ -398,7 +399,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
                 setwd(outWD)
                 pdf(file, width=11.7, height=8.3)
-                multiplot(p1, p2, p3, p4, cols=2)
+                multiplot(p1, p3, p2, p4, cols=2)
                 dev.off()
                 setwd(mainWD)
               }
@@ -414,7 +415,8 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 kp <- list(sigma=sig[i])
 
                 # Embed the time series
-                st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii)
+                st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii,
+                                    interval=interval[h])
 
                 # Separate the embedded time series in training and validation data
                 Xtr <- st_data$X[1:trainp,]
@@ -440,12 +442,13 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                 svm_results[ind,1] <- ind
                 svm_results[ind,2] <- minutes
                 svm_results[ind,3] <- link_name
-                svm_results[ind,4] <- sig_val
-                svm_results[ind,5] <- C[j]
-                svm_results[ind,6] <- epsilon[k]
-                svm_results[ind,7] <- tr_error
-                svm_results[ind,8] <- tr_rmse
-                svm_results[ind,9] <- ts_rmse
+                svm_results[ind,4] <- interval[h]
+                svm_results[ind,5] <- sig_val
+                svm_results[ind,6] <- C[j]
+                svm_results[ind,7] <- epsilon[k]
+                svm_results[ind,8] <- tr_error
+                svm_results[ind,9] <- tr_rmse
+                svm_results[ind,10] <- ts_rmse
 
                 # Save objects
                 if (save==TRUE)
@@ -514,7 +517,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
                   setwd(outWD)
                   pdf(file, width=11.7, height=8.3)
-                  multiplot(p1, p2, p3, p4, cols=2)
+                  multiplot(p1, p3, p2, p4, cols=2)
                   dev.off()
                   setwd(mainWD)
                 }
