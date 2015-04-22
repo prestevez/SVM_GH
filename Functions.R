@@ -245,25 +245,17 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
 
   # Create empty data frame to store results
-
   svm_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
-                            "C"=0, "Epsilon"=0, "Train Error"=0, "Residual Error"=0,
-                            "Predicted Error"=0)
-
-  colnames(svm_results)[7:9] <- c("Training Error" ,"Residual Error",
-                                  "Predicted Error")
+                            "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
+                            "Predicted RMSE"=0)
 
   # Create empty data frame to store best results
-
   best_results <- data.frame("Model ID"=0, "Minutes"=0, "Link"=0, "Sigma"=0,
-                            "C"=0, "Epsilon"=0, "Train Error"=0, "Residual Error"=0,
-                            "Predicted Error"=0)
-
-  colnames(best_results)[7:9] <- c("Training Error" ,"Residual Error",
-                                                            "Predicted Error")
+                            "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
+                            "Predicted RMSE"=0)
 
   # Create mean_errors data frame
-  mean_errors <- data.frame("Training Error"=0, "Residual Error"=0, "Predicted Error"=0)
+  mean_errors <- data.frame("Training Error"=0, "Residual RMSE"=0, "Predicted RMSE"=0)
 
   # For best_results table
   link.names <- colnames(data)
@@ -276,8 +268,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     rmse <- NRMSE
 
     # Modify data frame to store results
-    colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
-    colnames(best_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
+    colnames(svm_results)[8:9] <- c("Residual NRMSE", "Predicted NRMSE")
+    colnames(best_results)[8:9] <- c("Residual NRMSE", "Predicted NRMSE")
+    colnames(mean_errors)[2:3] <- c("Residual NRMSE", "Predicted NRMSE")
   }
 
 
@@ -537,7 +530,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
   if (nrmse==TRUE)
   {
-    colnames(mean_errors)[2:3] <- c("Standard Residual Errors", "Standard Predicted Errors")
+
   }
 
   for (e in 1:3)
