@@ -279,8 +279,8 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     colnames(svm_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
     colnames(best_results)[8:9] <- c("Standard Residual Error", "Standard Predicted Error")
   }
-  
-  
+
+
   ind <- 1
   # Cycle through parameters
   for (a in 1:length(m))
@@ -530,13 +530,10 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # Select best results into a data frame
   for (g in 1:length(link.names))
   {
-    best_results <- subset(svm_results, Link=link.names[g])
-    best_results <- best_results[which(best_results[,7]==min(best_results[,7])),]
+    temp <- subset(svm_results, Link=link.names[g])
+    best_results[g,] <- best_results[which(temp[,7]==min(temp[,7])),]
+    rm(temp)
   }
-
-#  # Create average error table
-#  mean_errors <- best_results[1,7:9]
-#  mean_errors <- mean_errors[-1,]
 
   if (nrmse==TRUE)
   {
