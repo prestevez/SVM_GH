@@ -104,10 +104,10 @@ embed <- function(data, m, s=FALSE, avg=FALSE, int=FALSE, std=FALSE, interval=NU
 
 # 1.8 st_embed
 
-st_embed <- function(data, m, col, W, int=F, ii=T)
+st_embed <- function(data, m, col, W, int=F, ii=T, interval=NULL)
 {
 
-  y <- embed(as.matrix(data[,col]), m=m, int=FALSE)$y
+  y <- embed(as.matrix(data[,col]), m=m, int=FALSE, interval=interval)$y
 
   if(ii==TRUE)
   {
@@ -119,11 +119,11 @@ st_embed <- function(data, m, col, W, int=F, ii=T)
   {
     if(is.null(X))
     {
-      X <- embed(as.matrix(data[,nbrs[i]]), m=m, int=FALSE)$X
+      X <- embed(as.matrix(data[,nbrs[i]]), m=m, interval=interval, int=FALSE)$X
     }
     else
     {
-      Xi <- embed(as.matrix(data[,nbrs[i]]), m=m, int=FALSE)$X
+      Xi <- embed(as.matrix(data[,nbrs[i]]), m=m, interval=interval, int=FALSE)$X
       X <- cbind(X, Xi)
     }
   }
