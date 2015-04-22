@@ -12,3 +12,7 @@ Runfile_Local.R
 GraphicOutput Full
 reset.sink.run.R
 .Rapp.history
+TextOutput old
+GraphicOutput Wrong
+Best_results_Tables.R
+runfile_bestresults.R
