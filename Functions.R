@@ -281,7 +281,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
   ind <- 1
   # Cycle through parameters
-  for (h in 1:length(h))
+  for (h in 1:length(interval))
   {
     for (a in 1:length(m))
     {
