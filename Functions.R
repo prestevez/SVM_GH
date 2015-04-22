@@ -223,7 +223,7 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
-                     trainp=NULL, outWD=NULL, mainWD=NULL,
+                     traind=NULL, outWD=NULL, mainWD=NULL,
                      nrmse=FALSE, graphs=FALSE, save=FALSE,
                      errplot=FALSE, interval=NULL)
 {
@@ -236,7 +236,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # C: Penalisation constant
   # epsilon: width of epsilon tube
   # cross: number of folds for k-fold cross validation
-  # trainp: Training period MUST MAKE THIS FLEXIBLE
+  # traind: Training period in days (assuming 181 obs per day)
   # outWD: name of Output Working directory
   # mainWD: name of main WD
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
@@ -294,6 +294,9 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             if (is.null(sig))
             {
               kp <- "automatic"
+
+              # Create training period (trainp) from traind
+              trainp <- length(data[,1]) - interval[h]*m[a] - traind*181
 
               # Embed the time series
               st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii,
@@ -411,8 +414,12 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
             else
             {
               for (i in 1:length(sig))
+              ## This loop could be integrated in the rest by using sig <-1
               {
                 kp <- list(sigma=sig[i])
+
+                # Create training period (trainp) from traind
+                trainp <- length(data[,1]) - interval[h]*m[a] - traind*181
 
                 # Embed the time series
                 st_data <- st_embed(data=data, m=m[a], col=col[b], W=W, ii=ii,
