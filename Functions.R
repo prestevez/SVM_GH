@@ -542,21 +542,21 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     err <-best_results[,8]
     pre <-best_results[,9]
 
-    xres <- "Residual Errors"
-    yres <- "Predicted Errors"
+    xres <- "Residual RMSE"
+    yres <- "Predicted RMSE"
     rmlab <- "RMSE"
 
     if (nrmse==TRUE)
     {
-      xres <- "Standard Residual Errors"
-      yres <- "Standard Predicted Errors"
+      xres <- "Standard Residual NRMSE"
+      yres <- "Standard Predicted NRMSE"
       rmlab <- "NRMSE"
     }
 
     ep1 <- qplot(err, pre, data=best_results, xlab=xres, ylab=yres) +
             ggtitle("SVR Models: Errors Summary")
 
-    ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors",) +
+    ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors") +
             ggtitle("SVR Models: Errors Summary")
 
 
