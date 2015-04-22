@@ -528,11 +528,6 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     rm(temp)
   }
 
-  if (nrmse==TRUE)
-  {
-
-  }
-
   for (e in 1:3)
   {
     mean_errors[1,e] <- mean(best_results[,6+e])
