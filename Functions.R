@@ -225,7 +225,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                      ii=TRUE, C=10, epsilon=0.1, cross=5,
                      trainp=NULL, outWD=NULL, mainWD=NULL,
                      nrmse=FALSE, graphs=FALSE, save=FALSE,
-                     errplot=FALSE)
+                     errplot=FALSE, interval=NULL)
 {
   # Inputs:
   # data: Matrix for the SVM
@@ -242,6 +242,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   # nrmse: Logical, if TRUE RMSE is calculated using NRMSE (standardised)
   # graphs: Logical, if TRUE graphs will be produced
   # errplot: Logical, if TRUE graphs for error rates will be produced
+  # interval: Time interval to be embedded, can be several values
 
 
   # Create empty data frame to store results
