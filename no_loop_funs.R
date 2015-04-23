@@ -1,11 +1,8 @@
 ## Using lapply to embedd the time series to many links
 
-lapply(1:6, function(i, x, y) x[[i]] + y[[i]],
-       x = list1, y = list2)
-
 m <- 1
 interval <- NULL
-col <- c(1:22)
+col <- c(1:2)
 W <- W1
 data <- flowdata
 
@@ -13,18 +10,8 @@ data_l <- lapply(1:length(col), function(i, m, interval, W, data, col){
           st_embed(data=data, m=m, col=col[i], W=W, ii=TRUE, interval=interval)},
           m=1, interval=interval, col=col, W=W, data=data)
 
-system.time(data_l <- lapply(1:length(col), function(i, m, interval, W, data, col){
-  st_embed(data=data, m=m, col=col[i], W=W, ii=TRUE, interval=interval)},
-  m=1, interval=interval, col=col, W=W, data=data)) 
-
-# system.time(
-# for (i in 1:length(col))
-# {
-#   data_loop[i] <- st_embed(data=data, m=m, col=col[i], W=W, ii=TRUE, interval=interval)
-# }) # Gives warnings.. 
 
 
-Ap
 
 
 # Separate the embedded time series in training and validation data
