@@ -258,7 +258,7 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
   mean_errors <- data.frame("Training Error"=0, "Residual RMSE"=0, "Predicted RMSE"=0)
 
   # For best_results table
-  link.names <- colnames(data[1:length(col)])
+  link.names <- colnames(data)[1:length(col)]
 
   # If NRMSE is TRUE
 
