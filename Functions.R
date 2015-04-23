@@ -250,15 +250,15 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
                             "C"=0, "Epsilon"=0, "Training Error"=0, "Residual RMSE"=0,
                             "Predicted RMSE"=0)
 
-  # Create empty data frame to store best results
-  best_results <- svm_results[1,]
-  best_results <- best_results[-1,]
-  
-  # Create mean_errors data frame
-  mean_errors <- data.frame("Training Error"=0, "Residual RMSE"=0, "Predicted RMSE"=0)
-
-  # For best_results table
-  link.names <- colnames(data)[1:length(col)]
+#   # Create empty data frame to store best results
+#   best_results <- svm_results[1,]
+#   best_results <- best_results[-1,]
+#   
+#   # Create mean_errors data frame
+#   mean_errors <- data.frame("Training Error"=0, "Residual RMSE"=0, "Predicted RMSE"=0)
+# 
+#   # For best_results table
+#   link.names <- colnames(data)[1:length(col)]
 
   # If NRMSE is TRUE
 
@@ -537,78 +537,80 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
     }
   }
 
-  # Select best results into a data frame
-  for (g in 1:length(link.names))
-  {
-    temp <- subset(svm_results, Link=link.names[g])
-    best_results[g,] <- best_results[which(temp[,8]==min(temp[,8])),]
-    rm(temp)
-  }
-
-  for (e in 1:3)
-  {
-    mean_errors[1,e] <- mean(best_results[,7+e])
-  }
-
-  rownames(mean_errors) <- "Average"
-
-  # Plot mean errors of best models
-  if (errplot==TRUE)
-  {
-    tr <- best_results[,8]
-    err <-best_results[,9]
-    pre <-best_results[,10]
-
-    xres <- "Residual RMSE"
-    yres <- "Predicted RMSE"
-    rmlab <- "RMSE"
-
-    if (nrmse==TRUE)
-    {
-      xres <- "Standard Residual NRMSE"
-      yres <- "Standard Predicted NRMSE"
-      rmlab <- "NRMSE"
-    }
-
-    ep1 <- qplot(err, pre, data=best_results, xlab=xres, ylab=yres) +
-            ggtitle("SVR Models: Errors Summary")
-
-    ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors") +
-            ggtitle("SVR Models: Errors Summary")
-
-
-    nrmse.plot <- data.frame(best_results[,9])
-    nrmse.plot[,2] <- xres
-
-    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,10]
-    nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),2] <- yres
-
-    colnames(nrmse.plot) <- c("values", "type")
-
-    ep3 <- qplot(type, values, data=nrmse.plot, geom="boxplot", ylab=rmlab, xlab="")+
-            ggtitle("SVR Models: Errors Summary")
-
-
-    terr.plot <- data.frame(best_results[,8])
-    terr.plot[,2] <- "Training Errors"
-    colnames(terr.plot) <- c("values", "type")
-
-    ep4 <- qplot(type, values, data=terr.plot, geom="boxplot", ylab="Training Errors",
-            xlab="") + ggtitle("SVR Models: Errors Summary")
-
-    errplotfile <- paste("errorplots_", length(col), "_links_",
-                          length(interval), "_inter", ".pdf", sep="")
-
-    setwd(outWD)
-    pdf(errplotfile, width=11.7, height=8.3)
-    multiplot(ep1, ep3, ep2, ep4, cols=2)
-    dev.off()
-    setwd(mainWD)
-  }
+#   # Select best results into a data frame
+#   for (g in 1:length(link.names))
+#   {
+#     temp <- subset(svm_results, Link=link.names[g])
+#     best_results[g,] <- best_results[which(temp[,8]==min(temp[,8])),]
+#     rm(temp)
+#   }
+# 
+#   for (e in 1:3)
+#   {
+#     mean_errors[1,e] <- mean(best_results[,7+e])
+#   }
+# 
+#   rownames(mean_errors) <- "Average"
+# 
+#   # Plot mean errors of best models
+#   if (errplot==TRUE)
+#   {
+#     tr <- best_results[,8]
+#     err <-best_results[,9]
+#     pre <-best_results[,10]
+# 
+#     xres <- "Residual RMSE"
+#     yres <- "Predicted RMSE"
+#     rmlab <- "RMSE"
+# 
+#     if (nrmse==TRUE)
+#     {
+#       xres <- "Standard Residual NRMSE"
+#       yres <- "Standard Predicted NRMSE"
+#       rmlab <- "NRMSE"
+#     }
+# 
+#     ep1 <- qplot(err, pre, data=best_results, xlab=xres, ylab=yres) +
+#             ggtitle("SVR Models: Errors Summary")
+# 
+#     ep2 <- qplot(err, tr, data=best_results, xlab=xres, ylab="Training Errors") +
+#             ggtitle("SVR Models: Errors Summary")
+# 
+# 
+#     nrmse.plot <- data.frame(best_results[,9])
+#     nrmse.plot[,2] <- xres
+# 
+#     nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),1] <- best_results[,10]
+#     nrmse.plot[nrow(nrmse.plot)+1:(nrow(nrmse.plot)+nrow(best_results)),2] <- yres
+# 
+#     colnames(nrmse.plot) <- c("values", "type")
+# 
+#     ep3 <- qplot(type, values, data=nrmse.plot, geom="boxplot", ylab=rmlab, xlab="")+
+#             ggtitle("SVR Models: Errors Summary")
+# 
+# 
+#     terr.plot <- data.frame(best_results[,8])
+#     terr.plot[,2] <- "Training Errors"
+#     colnames(terr.plot) <- c("values", "type")
+# 
+#     ep4 <- qplot(type, values, data=terr.plot, geom="boxplot", ylab="Training Errors",
+#             xlab="") + ggtitle("SVR Models: Errors Summary")
+# 
+#     errplotfile <- paste("errorplots_", length(col), "_links_",
+#                           length(interval), "_inter", ".pdf", sep="")
+# 
+#     setwd(outWD)
+#     pdf(errplotfile, width=11.7, height=8.3)
+#     multiplot(ep1, ep3, ep2, ep4, cols=2)
+#     dev.off()
+#     setwd(mainWD)
+#   }
 
   # Print results at prompt
-  return(list(svm_results=svm_results, best_results=best_results,
-              mean_errors=mean_errors))
+# return(list(svm_results=svm_results, best_results=best_results,
+#               mean_errors=mean_errors))
+
+return(list(svm_results=svm_results))
 
 }
 
