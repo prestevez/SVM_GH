@@ -268,8 +268,8 @@ svm_test <- function(data=NULL, m=NULL, col=NULL, W=NULL, sig=NULL,
 
     # Modify data frame to store results
     colnames(svm_results)[9:10] <- c("Residual NRMSE", "Predicted NRMSE")
-    colnames(best_results)[9:10] <- c("Residual NRMSE", "Predicted NRMSE")
-    colnames(mean_errors)[2:3] <- c("Residual NRMSE", "Predicted NRMSE")
+#     colnames(best_results)[9:10] <- c("Residual NRMSE", "Predicted NRMSE")
+#     colnames(mean_errors)[2:3] <- c("Residual NRMSE", "Predicted NRMSE")
   }
 
   if (is.null(interval))
