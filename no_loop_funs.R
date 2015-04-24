@@ -34,7 +34,6 @@ system.time(data_small <- m_embed(data=flowdata, m=m, col=col, interval=interval
 
 # Separate the embedded time series in training and validation data
 # Generates the length of the training periods
-# working fun, mcore
 trainp <- function(x, y, data, m, interval)
 {
   testp <- x*y
@@ -44,7 +43,11 @@ trainp <- function(x, y, data, m, interval)
   n <- nrow(data[[1]][[1]])+1
   nl <- n - mat
   trainp <- nl-mat-testp
-  c(trainp)
+  trainp <- c(trainp)
+  trainp <- t(matrix(trainp))
+  trainp <- rbind(trainp, trainp)
+  trainp <- c(trainp)
+#   trainp <- rep(trainp, length(data))
 }
 
 period <- trainp(x=day_len, y=train_d, data=data_small, interval=interval, m=m)
@@ -61,7 +64,7 @@ splitdata <- function(x, y, data, m, interval)
     # Training sets
     Training <- lapply(1:length(period), function(p, period , data)
       {
-        data[[p]][1:period[p],]
+        Xtr <- data[[p]][1:period[p],]
       }, data=data[[dd]], period=period)
     # Testing sets
     Testing <- lapply(1:length(period), function(p, period, data)
@@ -78,7 +81,7 @@ system.time(tr_sets <- splitdata(x=day_len, y=train_d, data=data_small, interval
 
 
 
-
+nrow(tr_sets$X425$Training[[7]]) + nrow(tr_sets$X425$Testing[[7]])
 
 
 even <- seq(2, length(data_small), 2)
