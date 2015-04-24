@@ -58,29 +58,21 @@ splitdata <- function(x, y, data, m, interval)
   period <- trainp(x=x, y=y, data=data, m=m, interval=interval)
   
   # Training sets
-  lapply(1:length(period), function(dd, x, data)
+  Training <- lapply(1:length(period), function(dd, x, data)
     {
       data[[dd]][1:x[dd],]
     }, data=data, x=period)
+  
+  # Testing sets
+  Testing <- lapply(1:length(period), function(dd, x, data)
+    {
+      data[[dd]][(x[dd]+1):nrow(data[[dd]]),]
+    }, data=data, x=period)
+  return(list(Training=Training, Testing=Testing))
 }
 
 tr_sets <- splitdata(x=day_len, y=train_d, data=data_small, interval=interval, m=m)
 
 
 
-
-tr_sets <- lapply(1:length(period), function(dd, data, x)
-  {
-    data[[dd]][1:x[dd],]
-  }, data=data_small, x=period)
-
-length(period)
-
-Xtr <- data_small[[1:16]][1:period[1:16],]
-
-
-Xtr <- st_data$X[1:trainp,]
-ytr <- st_data$y[1:trainp]
-Xts <- st_data$X[(trainp+1):nrow(st_data$X),]
-yts <- st_data$y[(trainp+1):nrow(st_data$y)]
 
