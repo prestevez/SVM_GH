@@ -8,6 +8,7 @@
 # Load packages to library
 
 library(kernlab)
+library(parallel)
 # library(ggplot2)
 # library(knitr)
 
