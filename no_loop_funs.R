@@ -33,7 +33,8 @@ system.time(data_small <- m_embed(data=flowdata, m=m, col=col, interval=interval
 
 
 # Separate the embedded time series in training and validation data
-# Generates the length of the training periods
+# Generates the length of the training periods 
+# used in splitdata, but need to generate it for the svm
 trainp <- function(x, y, data, m, interval)
 {
   testp <- x*y
@@ -79,9 +80,21 @@ splitdata <- function(x, y, data, m, interval)
 system.time(tr_sets <- splitdata(x=day_len, y=train_d, data=data_small, interval=interval, m=m))
 
 
+## SVM search over training data
+system.time(models <- mclapply(1:length(tr_sets), function(dd, data, period)
+{
+  odd <-seq(1,length(period), 2)
+  even <- seq(2,length(period), 2)
+  list <- mclapply(1:(length(period)/2), function(p, data, period, odd, even)
+    {
+      Xtr <- data[[1]][[odd[p]]]
+      ytr <- data[[1]][[even[p]]]
+      list <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
+         kpar="automatic", C=10, epsilon=0.1, cross=5)
+    }, data=tr_sets[[dd]], period=period, odd=odd, even=even, mc.cores=detectCores())
+}, data=tr_sets, period=period, mc.cores=detectCores())
+)
 
 
-nrow(tr_sets$X425$Training[[7]]) + nrow(tr_sets$X425$Testing[[7]])
 
 
-even <- seq(2, length(data_small), 2)

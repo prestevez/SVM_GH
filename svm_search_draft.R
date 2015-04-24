@@ -26,3 +26,5 @@ system.time(models <- mclapply(seq(1,length(ul)/4, 1), function(dd, data)
 },
 data=ul, mc.cores=detectCores())
 )
+
+## test with
