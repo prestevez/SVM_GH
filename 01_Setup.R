@@ -8,8 +8,8 @@
 # Load packages to library
 
 library(kernlab)
-library(ggplot2)
-library(knitr)
+# library(ggplot2)
+# library(knitr)
 
 # Set up objects for WD paths
 
