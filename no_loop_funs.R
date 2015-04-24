@@ -73,21 +73,27 @@ splitdata <- function(x, y, data, m, interval)
 ## work in progress
 splitdata <- function(x, y, data, m, interval)
 {
+
   # Create training period
   period <- trainp(x=x, y=y, data=data, m=m, interval=interval)
 
-  # Training sets
-  Training <- lapply(1:length(period), function(dd, x, data)
-    {
-      data[[dd]][1:x[dd],]
-    }, data=data, x=period)
+  # Start mclapply by link
+  mclapply(1:length(data), function(dd, period, data)
+  {
+    # Training sets
+    Training <- lapply(1:length(period), function(p, period , data)
+      {
+        data[[1]][[p]][1:period[p],]
+      }, data=data[[dd]], period=period)
 
-  # Testing sets
-  Testing <- lapply(1:length(period), function(dd, x, data)
-    {
-      data[[dd]][(x[dd]+1):nrow(data[[dd]]),]
-    }, data=data, x=period)
-  return(list(Training=Training, Testing=Testing))
+    # Testing sets
+    Testing <- lapply(1:length(period), function(p, period, data)
+      {
+        data[[1]][[p]][(period[p]+1):nrow(data[[1]][[p]]),]
+      }, data=data[[dd]], x=period)
+  }, period=period, data=data, mc.cores=detectCores())
+
+  # return(list(Training=Training, Testing=Testing))
 }
 
 system.time(tr_sets <- splitdata(x=day_len, y=train_d, data=data_small, interval=interval, m=m))
