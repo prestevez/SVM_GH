@@ -33,6 +33,7 @@ system.time(data_small <- m_embed(data=flowdata, m=m, col=col, interval=interval
 
 
 # Separate the embedded time series in training and validation data
+
 # Generates the length of the training periods
 # used in splitdata, but need to generate it for the svm
 trainp <- function(x, y, data, m, interval)
@@ -48,14 +49,18 @@ trainp <- function(x, y, data, m, interval)
   trainp <- t(matrix(trainp))
   trainp <- rbind(trainp, trainp)
   trainp <- c(trainp)
+  m2 <- t(matrix(paste(as.character(m*5), "mins", sep="")))
+  m2 <- rbind(m2, m2)
+  m2 <- c(m2)
+  int2 <- t(matrix(paste(as.character(interval), "int", sep="")))
+  int2 <- c(int2, int2)
+  int2 <- c(int2)
   names_mat <- matrix(0, length(m), length(interval))
-  names_mat <- sapply(1:(length(m)*length(interval)), function(ll, m, interval, names_mat){
-    m2 <- paste(as.character(c(m*5,m*5)), "mins", sep="")
-    int2 <- paste(as.character(c(interval,interval)), "int", sep="")
+  names_mat <- sapply(1:(length(m)*length(interval)), function(ll, m2, int2, names_mat){
     names_mat[ll] <- paste(m2[ll], int2[ll], sep="_")}, 
-    m=m, interval=interval, names_mat=names_mat)
+    m2=m2, int2=int2, names_mat=names_mat)
   names_mat <- t(matrix(names_mat))
-  names_mat <- rbind(paste("X", names_mat, sep="_"), paste("y", names_mat,sep="_"))
+  names_mat <- rbind(paste("X", names_mat, sep="_"), paste("y", names_mat, sep="_"))
   names_mat <- c(names_mat)
   names(trainp) <- names_mat
   return(trainp)
@@ -70,23 +75,23 @@ splitdata <- function(x, y, data, m, interval)
   period <- trainp(x=x, y=y, data=data, m=m, interval=interval)
   names <- names(data)
   # Start mclapply by link
-  list <- lapply(1:length(data), function(dd, period, data)
+  list <- mclapply(1:length(data), function(dd, period, data)
   {
-    names <- names(period)
+    pnames <- names(period)
     # Training sets
-    Training <- lapply(1:length(period), function(p, period , data)
+    Training <- mclapply(1:length(period), function(p, period , data)
       {
-        data[[p]][1:period[p],]
-      }, data=data[[dd]], period=period)
+        Tr <- data[[p]][1:period[p],]
+      }, data=data[[dd]], period=period, mc.cores=detectCores())
     # Testing sets
-    Testing <- lapply(1:length(period), function(p, period, data)
+    Testing <- mclapply(1:length(period), function(p, period, data)
       {
         data[[p]][(period[p]+1):nrow(data[[p]]),]
-      }, data=data[[dd]], period=period)
-    setNames(Training, names)
-    setNames(Testing, names)
-    list <- list(Training=Training, Testing=Testing)
-  }, period=period, data=data)
+      }, data=data[[dd]], period=period, mc.cores=detectCores())
+    names(Training) <- pnames
+    names(Testing) <- pnames
+    list(Training=Training, Testing=Testing)
+  }, period=period, data=data, mc.cores=detectCores())
   setNames(list, names)
 }
 
@@ -110,8 +115,7 @@ system.time(models <- mclapply(1:length(tr_sets), function(dd, data, period)
 
 # svm_search function
 
-svm_search <- function(data, period, sigma=NULL, C=1,
-                        epsilon=0.1)
+svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
 {
   # Inputs:
   # data: Previously prepared data using m_embed and splitdata functions
