@@ -110,6 +110,22 @@ svm_search <- function(data, period, sigma=NULL, C=1,
   if (is.null(sig))
   {
     kp <- "automatic"
-
+    sigma <- 1
+    sigma.null <- TRUE
   }
+  else
+  {
+    sigma.null <- FALSE
+  }
+
+  names <- names(data)
+  # Start mclapply per link
+  list <- lapply(1:length(data), function(dd, data, period, sigma, C, epsilon)
+  {
+    odd <- seq(1, length(period), 2)
+    even <- seq(2, length(period), 2)
+    list2 <-
+  },)
+
+
 }
