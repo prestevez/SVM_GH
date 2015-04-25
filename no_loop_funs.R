@@ -48,7 +48,17 @@ trainp <- function(x, y, data, m, interval)
   trainp <- t(matrix(trainp))
   trainp <- rbind(trainp, trainp)
   trainp <- c(trainp)
-#   trainp <- rep(trainp, length(data))
+  names_mat <- matrix(0, length(m), length(interval))
+  names_mat <- sapply(1:(length(m)*length(interval)), function(ll, m, interval, names_mat){
+    m2 <- paste(as.character(c(m*5,m*5)), "mins", sep="")
+    int2 <- paste(as.character(c(interval,interval)), "int", sep="")
+    names_mat[ll] <- paste(m2[ll], int2[ll], sep="_")}, 
+    m=m, interval=interval, names_mat=names_mat)
+  names_mat <- t(matrix(names_mat))
+  names_mat <- rbind(paste("X", names_mat, sep="_"), paste("y", names_mat,sep="_"))
+  names_mat <- c(names_mat)
+  names(trainp) <- names_mat
+  return(trainp)
 }
 
 period <- trainp(x=day_len, y=train_d, data=data_small, interval=interval, m=m)
@@ -60,20 +70,23 @@ splitdata <- function(x, y, data, m, interval)
   period <- trainp(x=x, y=y, data=data, m=m, interval=interval)
   names <- names(data)
   # Start mclapply by link
-  list <- mclapply(1:length(data), function(dd, period, data)
+  list <- lapply(1:length(data), function(dd, period, data)
   {
+    names <- names(period)
     # Training sets
     Training <- lapply(1:length(period), function(p, period , data)
       {
-        Xtr <- data[[p]][1:period[p],]
+        data[[p]][1:period[p],]
       }, data=data[[dd]], period=period)
     # Testing sets
     Testing <- lapply(1:length(period), function(p, period, data)
       {
         data[[p]][(period[p]+1):nrow(data[[p]]),]
       }, data=data[[dd]], period=period)
+    setNames(Training, names)
+    setNames(Testing, names)
     list <- list(Training=Training, Testing=Testing)
-  }, period=period, data=data, mc.cores=detectCores())
+  }, period=period, data=data)
   setNames(list, names)
 }
 
