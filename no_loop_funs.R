@@ -1,7 +1,7 @@
 ## Using lapply to embedd the time series to many links, add m options, add interval options.
 
 m <- c(1:2)
-interval <- c(1,181) # can embedd more than one interval at a time, can't split well yet, though
+interval <- c(1,181) # can embedd more than one interval at a time
 col <- c(1:2)
 W <- W1
 data <- flowdata
@@ -33,7 +33,7 @@ system.time(data_small <- m_embed(data=flowdata, m=m, col=col, interval=interval
 
 
 # Separate the embedded time series in training and validation data
-# Generates the length of the training periods 
+# Generates the length of the training periods
 # used in splitdata, but need to generate it for the svm
 trainp <- function(x, y, data, m, interval)
 {
@@ -95,6 +95,21 @@ system.time(models <- mclapply(1:length(tr_sets), function(dd, data, period)
 }, data=tr_sets, period=period, mc.cores=detectCores())
 )
 
+# svm_search function
 
+svm_search <- function(data, period, sigma=NULL, C=1,
+                        epsilon=0.1)
+{
+  # Inputs:
+  # data: Previously prepared data using m_embed and splitdata functions
+  # period: Length of training periods created with trainp function
+  # sigma: sigma value for svm, defaults to NULL for automatic estimation using sigest
+  # C: Penalisation constant, defaults to 1
+  # epsilon: width of epsilon tube, dedaults to 0.1
 
+  if (is.null(sig))
+  {
+    kp <- "automatic"
 
+  }
+}
