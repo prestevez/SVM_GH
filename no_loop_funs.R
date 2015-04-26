@@ -169,5 +169,64 @@ system.time(
 models_fun <- svm_search(data=tr_sets, period=period, sigma=NULL, C=C, epsilon=ep)
 )
 
-models1 <- unlist(unlist(unlist(unlist(models_fun, recursive=TRUE), recursive=TRUE), recursive=TRUE),
-               recursive=TRUE)
+
+# Create predictions NRMSE and RMSE for the models
+
+modelerrors <- function(models, data)
+{
+  # models: list of ksvm models generated with svm_search function
+  # data: the same list of data used to generates the models object
+  
+  # unlist the models and the data for easier managemet
+  models  <- lapply(1:length(data), function(d, models)
+                    {unlist(models[[d]], recursive=TRUE)},
+                    models=models)
+  data <- unlist(data, recursive=F)
+  trid <- seq(1, length(data), 2)
+  tsid <- seq(2, length(data), 2)
+  tr <- data[c(trid)]
+  ts <- data[c(tsid)]
+  trnames <- names(tr)
+  tsnames <- names(ts)
+  Training <- mclapply(1:length(tr), function(t, tr, models)
+    {
+      Xtr <- tr[[t]][[1]]
+      ytr <- tr[[t]][[2]]
+      models <- models[[t]]
+      mnames <- names(models)
+      list2 <- lapply(1:length(models), function(m, models, Xtr, ytr)
+        {
+          traine <- error(models[[m]])
+          pred <- predict(models[[m]], Xtr)
+          residual <- ytr - pred
+          rmse <- rmse(obs=ytr, pred=pred)
+          nrmse <- NRMSE(obs=ytr, pred=pred)
+          list(error=error, pred=pred, residual=residual, rmse=rmse, NRMSE=NRMSE)
+        }, models=models, Xtr=Xtr, ytr=ytr)
+      names(list2) <- mnames
+    }, tr=tr, models=models, mc.cores=detectCores())
+  names(Training) <- trnames
+  Testing <- mclapply(1:length(ts), function(t, ts, models)
+    {
+      Xts <- ts[[t]][[1]]
+      yts <- ts[[t]][[2]]
+      models <- models[[t]]
+      mnames <- names(models)
+      list3 <- lapply(1:length(models), function(m, models, Xts, yts)
+        {
+          pred <- predict(models[m], Xts)
+          residual <- yts - pred
+          rmse <- rmse(obs=yts, pred=pred)
+          nrmse <- NRMSE(obs=yts, pred=pred)
+          list(pred=pred, residual=residual, rmse=rmse, NRMSE=NRMSE)
+        }, models=models, Xts=Xts, yts=yts)
+      names(list3) <- mnames
+    }, ts=ts, models=models, mc.cores=detectCores())
+  names(Testing) <- tsnames
+  return(list(Training=Training, Testing=Testing))
+}
+
+system.time(
+  errorlist <- modelerrors(models_fun, tr_sets)
+  )
+
