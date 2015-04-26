@@ -1,14 +1,14 @@
 ## Using lapply to embedd the time series to many links, add m options, add interval options.
 
-m <- c(1:2)
-interval <- c(1,181) # can embedd more than one interval at a time
-col <- c(1:2)
+m <- c(1)
+interval <- c(1) # can embedd more than one interval at a time
+col <- c(1:5)
 W <- W1
 data <- flowdata
 day_len <- 181
 train_d <- 12
-C <- c(1,2)
-ep <- c(0.1, 0.2)
+C <- c(1)
+ep <- c(0.1)
 
 ## better embedding function, multicore with names
 m_embed <- function(m, interval, col, W, data)
@@ -97,23 +97,6 @@ splitdata <- function(x, y, data, m, interval)
 
 system.time(tr_sets <- splitdata(x=day_len, y=train_d, data=data_small, interval=interval, m=m))
 
-
-## SVM search over training data
-system.time(models <- mclapply(1:length(tr_sets), function(dd, data, period)
-{
-  odd <-seq(1,length(period), 2)
-  even <- seq(2,length(period), 2)
-  list <- mclapply(1:(length(period)/2), function(p, data, period, odd, even)
-    {
-      Xtr <- data[[1]][[odd[p]]]
-      ytr <- data[[1]][[even[p]]]
-      list <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
-         kpar="automatic", C=10, epsilon=0.1, cross=5)
-    }, data=tr_sets[[dd]], period=period, odd=odd, even=even,
-        mc.cores=detectCores())
-}, data=tr_sets, period=period, mc.cores=detectCores())
-)
-
 # svm_search function
 
 svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
@@ -180,6 +163,8 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   }, data=data, period=period, sigma=sigma, C=C, epsilon=epsilon,
       mc.cores=detectCores())
   setNames(list, names)
+  list <- unlist(unlist(unlist(unlist(list, recursive=TRUE), recursive=TRUE), recursive=TRUE),
+                 recursive=TRUE)
 }
 
 system.time(
