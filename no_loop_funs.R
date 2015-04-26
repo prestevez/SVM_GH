@@ -7,6 +7,8 @@ W <- W1
 data <- flowdata
 day_len <- 181
 train_d <- 12
+C <- c(1,2)
+ep <- c(0.1, 0.2)
 
 ## better embedding function, multicore with names
 m_embed <- function(m, interval, col, W, data)
@@ -29,8 +31,6 @@ m_embed <- function(m, interval, col, W, data)
 }
 
 system.time(data_small <- m_embed(data=flowdata, m=m, col=col, interval=interval, W=W))
-
-
 
 # Separate the embedded time series in training and validation data
 
@@ -125,7 +125,7 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   # C: Penalisation constant, defaults to 1
   # epsilon: width of epsilon tube, dedaults to 0.1
 
-  if (is.null(sig))
+  if (is.null(sigma))
   {
     sigma <- 1
   }
@@ -135,7 +135,7 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   {
     odd <- seq(1, length(period), 2)
     even <- seq(2, length(period), 2)
-    pnames <- sub("X_", "", names(period))[c(odd)]
+    #pnames <- sub("X_", "", names(period))[c(odd)]
     # mclapply by m*int combinations (reflected in period)
     list2 <- mclapply(1:(length(period)/2),
       function(p, data, period, odd, even, sigma, C, epsilon)
@@ -170,19 +170,25 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
                     kpar=kp, C=C, epsilon=epsilon[e], cross=5)
               },Xtr=Xtr, ytr=ytr, C=C, epsilon=epsilon, kp=kp,
                   mc.cores=detectCores())
-              names(list5) <- enames
+              setNames(list5, enames)
+              #names(list5) <- enames
             }, Xtr=Xtr, ytr=ytr, kp=kp, C=C[c], epsilon=epsilon,
                 mc.cores=detectCores())
-            names(list4) <- cnames
-          }, Xtr=Xtr, ytr=ytr, sigma=sgima, C=C, epsilon=epsilon, kp=kp,
+            setNames(list4, cnames)
+            #names(list4) <- cnames
+          }, Xtr=Xtr, ytr=ytr, sigma=sigma, C=C, epsilon=epsilon, kp=kp,
               mc.cores=detectCores())
-          names(list3) <- snames
+          setNames(list3, snames)
+          #names(list3) <- snames
         }, data=data[[dd]], period=period, sigma=sigma, C=C, epsilon=epsilon,
             odd=odd, even=even, mc.cores=detectCores())
-    names(list2) <- pnames
+     setNames(list2, pnames)
+     #names(list2) <- pnames
   }, data=data, period=period, sigma=sigma, C=C, epsilon=epsilon,
       mc.cores=detectCores())
   setNames(list, names)
-
-
 }
+
+system.time(
+models_fun <- svm_search(data=tr_sets, period=period, sigma=NULL, C=C, epsilon=ep)
+)
