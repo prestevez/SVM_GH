@@ -129,7 +129,6 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   {
     sigma <- 1
   }
-
   names <- names(data)
   # Start mclapply per link
   list <- mclapply(1:length(data), function(dd, data, period, sigma, C, epsilon)
@@ -150,14 +149,32 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
           }
           else
           {
-            snames <- paste("sigma", as.character(sigma), sep="")
+            snames <- paste("sigma: ", as.character(sigma), sep="")
           }
           # mclapply by sigma
           list3 <- mclapply(1:length(sigma),
           function(s, sigma, Xtr, ytr, C, epsilon, kp)
           {
-
-          }, Xtr=Xtr, ytr=ytr, sigma=sgima[s], C=C, epsilon=epsilon, kp=kp,
+            if (sigma!=1)
+            {
+              kp <- list(sigma=sigma[s])
+            }
+            cnames <- paste("C: ", as.character(C), sep="")
+            list4 <- mclapply(1:length(C), function(c, Xtr, ytr, kp, C, epsilon)
+            {
+              enames <- paste("epsilon: ", as.character(epsilon), sep="")
+              list5 <- mclapply(1:length(epsilon),
+              function(e, Xtr, ytr, kp, C, epsilon)
+              {
+                models <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
+                    kpar=kp, C=C, epsilon=epsilon[e], cross=5)
+              },Xtr=Xtr, ytr=ytr, C=C, epsilon=epsilon, kp=kp,
+                  mc.cores=detectCores())
+              names(list5) <- enames
+            }, Xtr=Xtr, ytr=ytr, kp=kp, C=C[c], epsilon=epsilon,
+                mc.cores=detectCores())
+            names(list4) <- cnames
+          }, Xtr=Xtr, ytr=ytr, sigma=sgima, C=C, epsilon=epsilon, kp=kp,
               mc.cores=detectCores())
           names(list3) <- snames
         }, data=data[[dd]], period=period, sigma=sigma, C=C, epsilon=epsilon,
