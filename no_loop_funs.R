@@ -57,7 +57,7 @@ trainp <- function(x, y, data, m, interval)
   int2 <- c(int2)
   names_mat <- matrix(0, length(m), length(interval))
   names_mat <- sapply(1:(length(m)*length(interval)), function(ll, m2, int2, names_mat){
-    names_mat[ll] <- paste(m2[ll], int2[ll], sep="_")}, 
+    names_mat[ll] <- paste(m2[ll], int2[ll], sep="_")},
     m2=m2, int2=int2, names_mat=names_mat)
   names_mat <- t(matrix(names_mat))
   names_mat <- rbind(paste("X", names_mat, sep="_"), paste("y", names_mat, sep="_"))
@@ -137,12 +137,25 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
 
   names <- names(data)
   # Start mclapply per link
-  list <- lapply(1:length(data), function(dd, data, period, sigma, C, epsilon)
+  list <- mclapply(1:length(data), function(dd, data, period, sigma, C, epsilon)
   {
     odd <- seq(1, length(period), 2)
     even <- seq(2, length(period), 2)
-    list2 <-
-  },)
+    pnames <- sub("X_", "", names(period))[c(odd)]
+    # mclapply by m*int combinations (reflected in period)
+    list2 <- mclapply(1:(length(period)/2),
+      function(p, data, period, odd, even, sigma, C, epsilon)
+        {
+          Xtr <- data[[1]][[odd[p]]]
+          ytr <- data[[1]][[even[p]]]
+          if (sigma.null==TRUE)
+          sname <-
+        }, data=data[[dd]], period=period, sigma=sigma, C=C, epsilon=epsilon,
+            odd=odd, even=even, mc.cores=detectCores())
+    names(list2) <- pnames
+  }, data=data, period=period, sigma=sigma, C=C, epsilon=epsilon,
+      mc.cores=detectCores())
+  setNames(list, names)
 
 
 }
