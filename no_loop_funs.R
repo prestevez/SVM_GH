@@ -135,9 +135,9 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   {
     odd <- seq(1, length(period), 2)
     even <- seq(2, length(period), 2)
-    #pnames <- sub("X_", "", names(period))[c(odd)]
-    # mclapply by m*int combinations (reflected in period)
-    list2 <- mclapply(1:(length(period)/2),
+    pnames <- sub("X_", "", names(period))[c(odd)]
+    # lapply by m*int combinations (reflected in half "period")
+    list2 <- lapply(1:(length(period)/2),
       function(p, data, period, odd, even, sigma, C, epsilon)
         {
           Xtr <- data[[1]][[odd[p]]]
@@ -152,7 +152,7 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
             snames <- paste("sigma: ", as.character(sigma), sep="")
           }
           # mclapply by sigma
-          list3 <- mclapply(1:length(sigma),
+          list3 <- lapply(1:length(sigma),
           function(s, sigma, Xtr, ytr, C, epsilon, kp)
           {
             if (sigma!=1)
@@ -160,30 +160,23 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
               kp <- list(sigma=sigma[s])
             }
             cnames <- paste("C: ", as.character(C), sep="")
-            list4 <- mclapply(1:length(C), function(c, Xtr, ytr, kp, C, epsilon)
+            list4 <- lapply(1:length(C), function(c, Xtr, ytr, kp, C, epsilon)
             {
               enames <- paste("epsilon: ", as.character(epsilon), sep="")
-              list5 <- mclapply(1:length(epsilon),
+              list5 <- lapply(1:length(epsilon),
               function(e, Xtr, ytr, kp, C, epsilon)
               {
                 models <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
                     kpar=kp, C=C, epsilon=epsilon[e], cross=5)
-              },Xtr=Xtr, ytr=ytr, C=C, epsilon=epsilon, kp=kp,
-                  mc.cores=detectCores())
+              },Xtr=Xtr, ytr=ytr, C=C[c], epsilon=epsilon, kp=kp)
               setNames(list5, enames)
-              #names(list5) <- enames
-            }, Xtr=Xtr, ytr=ytr, kp=kp, C=C[c], epsilon=epsilon,
-                mc.cores=detectCores())
+            }, Xtr=Xtr, ytr=ytr, kp=kp, C=C, epsilon=epsilon)
             setNames(list4, cnames)
-            #names(list4) <- cnames
-          }, Xtr=Xtr, ytr=ytr, sigma=sigma, C=C, epsilon=epsilon, kp=kp,
-              mc.cores=detectCores())
+          }, Xtr=Xtr, ytr=ytr, sigma=sigma, C=C, epsilon=epsilon, kp=kp)
           setNames(list3, snames)
-          #names(list3) <- snames
         }, data=data[[dd]], period=period, sigma=sigma, C=C, epsilon=epsilon,
-            odd=odd, even=even, mc.cores=detectCores())
+            odd=odd, even=even)
      setNames(list2, pnames)
-     #names(list2) <- pnames
   }, data=data, period=period, sigma=sigma, C=C, epsilon=epsilon,
       mc.cores=detectCores())
   setNames(list, names)
