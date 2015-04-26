@@ -109,7 +109,8 @@ system.time(models <- mclapply(1:length(tr_sets), function(dd, data, period)
       ytr <- data[[1]][[even[p]]]
       list <- ksvm(x=Xtr, y=ytr, type="eps-svr", kernel="rbfdot",
          kpar="automatic", C=10, epsilon=0.1, cross=5)
-    }, data=tr_sets[[dd]], period=period, odd=odd, even=even, mc.cores=detectCores())
+    }, data=tr_sets[[dd]], period=period, odd=odd, even=even,
+        mc.cores=detectCores())
 }, data=tr_sets, period=period, mc.cores=detectCores())
 )
 
@@ -126,13 +127,7 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
 
   if (is.null(sig))
   {
-    kp <- "automatic"
     sigma <- 1
-    sigma.null <- TRUE
-  }
-  else
-  {
-    sigma.null <- FALSE
   }
 
   names <- names(data)
@@ -148,8 +143,23 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
         {
           Xtr <- data[[1]][[odd[p]]]
           ytr <- data[[1]][[even[p]]]
-          if (sigma.null==TRUE)
-          sname <-
+          if (sigma==1)
+          {
+            snames <- "Sigma: Auto"
+            kp <- "automatic"
+          }
+          else
+          {
+            snames <- paste("sigma", as.character(sigma), sep="")
+          }
+          # mclapply by sigma
+          list3 <- mclapply(1:length(sigma),
+          function(s, sigma, Xtr, ytr, C, epsilon, kp)
+          {
+
+          }, Xtr=Xtr, ytr=ytr, sigma=sgima[s], C=C, epsilon=epsilon, kp=kp,
+              mc.cores=detectCores())
+          names(list3) <- snames
         }, data=data[[dd]], period=period, sigma=sigma, C=C, epsilon=epsilon,
             odd=odd, even=even, mc.cores=detectCores())
     names(list2) <- pnames
