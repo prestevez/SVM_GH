@@ -163,10 +163,11 @@ svm_search <- function(data, period, sigma=NULL, C=1, epsilon=0.1)
   }, data=data, period=period, sigma=sigma, C=C, epsilon=epsilon,
       mc.cores=detectCores())
   setNames(list, names)
-  list <- unlist(unlist(unlist(unlist(list, recursive=TRUE), recursive=TRUE), recursive=TRUE),
-                 recursive=TRUE)
 }
 
 system.time(
 models_fun <- svm_search(data=tr_sets, period=period, sigma=NULL, C=C, epsilon=ep)
 )
+
+models1 <- unlist(unlist(unlist(unlist(models_fun, recursive=TRUE), recursive=TRUE), recursive=TRUE),
+               recursive=TRUE)
