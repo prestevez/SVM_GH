@@ -196,12 +196,16 @@ modelerrors <- function(models, data)
       mnames <- names(models)
       list2 <- lapply(1:length(models), function(m, models, Xtr, ytr)
         {
+          sigma_val <- kpar(kernelf(models[[m]]))$sigma
+          C_val <- param(models[[m]])$C
+          eps_val <- param(models[[m]])$epsilon
           traine <- error(models[[m]])
           pred <- predict(models[[m]], Xtr)
           residual <- ytr - pred
           rmse <- rmse(obs=ytr, pred=pred)
           nrmse <- NRMSE(obs=ytr, pred=pred)
-          list(pred=pred, residual=residual, traine=traine, rmse=rmse, nrmse=nrmse)
+          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, eps_val=eps_val,
+               traine=traine, rmse=rmse, nrmse=nrmse)
         }, models=models, Xtr=Xtr, ytr=ytr)
       setNames(list2, mnames)
     }, tr=tr, models=models, mc.cores=detectCores())
@@ -214,11 +218,15 @@ modelerrors <- function(models, data)
       mnames <- names(models)
       list3 <- lapply(1:length(models), function(m, models, Xts, yts)
         {
+          sigma_val <- kpar(kernelf(models[[m]]))$sigma
+          C_val <- param(models[[m]])$C
+          eps_val <- param(models[[m]])$epsilon
           pred <- predict(models[[m]], Xts)
           residual <- yts - pred
           rmse <- rmse(obs=yts, pred=pred)
           nrmse <- NRMSE(obs=yts, pred=pred)
-          list(pred=pred, residual=residual, rmse=rmse, nrmse=nrmse)
+          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, eps_val=eps_val,
+               rmse=rmse, nrmse=nrmse)
         }, models=models, Xts=Xts, yts=yts)
       setNames(list3, mnames)
     }, ts=ts, models=models, mc.cores=detectCores())
@@ -232,3 +240,7 @@ system.time(
   )
 
 errunlist <- unlist(errorlist, recursive=FALSE)
+
+# Integrate results in a table
+
+
