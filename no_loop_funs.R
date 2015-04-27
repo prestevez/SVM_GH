@@ -241,8 +241,83 @@ system.time(
   errorlist <- modelerrors(models_fun, tr_sets)
   )
 
-errunlist <- unlist(errorlist, recursive=FALSE)
 
 # Integrate results in a table
 
+trdf <- data.frame(matrix(0, length(errorlist1[[1]][[1]]), 11))
+colnames(trdf) <- c("Link", "m*int", "Sigma", "C", "Epsilon", "SV", 
+                              "Tr.Err", "Tr.RMSE", "Tr.NRMSE", "Ts.RMSE", "Ts.NRMSE")
 
+ind <- 1
+for (i in 1:length(errorlist1[[1]]))
+{
+  for (b in 1:length(errorlist1[[1]][[i]]))
+  {
+    trdf[ind, 1] <- sub(".Training", "", names(errorlist1[[1]]))
+    trdf[ind, 2] <- sub("X_", "", names(period1[1]))
+    trdf[ind, 3] <- errorlist1[[1]][[i]][[b]]$sigma_val
+    trdf[ind, 4] <- errorlist1[[1]][[i]][[b]]$C_val
+    trdf[ind, 5] <- errorlist1[[1]][[i]][[b]]$eps_val
+    trdf[ind, 6] <- errorlist1[[1]][[i]][[b]]$SV
+    trdf[ind, 7] <- errorlist1[[1]][[i]][[b]]$traine
+    trdf[ind, 8] <- errorlist1[[1]][[i]][[b]]$rmse
+    trdf[ind, 9] <- errorlist1[[1]][[i]][[b]]$nrmse
+    
+    ind <- ind + 1
+  }
+}
+ind <- 1
+for (i in 1:length(errorlist1[[2]]))
+{
+  for (b in 1:length(errorlist1[[2]][[i]]))
+  {
+    trdf[ind, 10] <- errorlist1[[2]][[i]][[b]]$rmse
+    trdf[ind, 11] <- errorlist1[[2]][[i]][[b]]$nrmse
+    
+    ind <- ind + 1
+  }
+}
+ 
+
+# make process into a fun
+tabresults <- function(errorlist, period)
+{
+  df <- data.frame(matrix(0, length(errorlist[[1]][[1]]), 11))
+  colnames(df) <- c("Link", "m*int", "Sigma", "C", "Epsilon", "SV", 
+                      "Tr.Err", "Tr.RMSE", "Tr.NRMSE", "Ts.RMSE", "Ts.NRMSE")
+  
+  ind <- 1
+  for (i in 1:length(errorlist[[1]]))
+  {
+    for (b in 1:length(errorlist[[1]][[i]]))
+    {
+      df[ind, 1] <- sub(".Training", "", names(errorlist[[i]]))
+      df[ind, 2] <- sub("X_", "", names(period[i]))
+      df[ind, 3] <- errorlist[[1]][[i]][[b]]$sigma_val
+      df[ind, 4] <- errorlist[[1]][[i]][[b]]$C_val
+      df[ind, 5] <- errorlist[[1]][[i]][[b]]$eps_val
+      df[ind, 6] <- errorlist[[1]][[i]][[b]]$SV
+      df[ind, 7] <- errorlist[[1]][[i]][[b]]$traine
+      df[ind, 8] <- errorlist[[1]][[i]][[b]]$rmse
+      df[ind, 9] <- errorlist[[1]][[i]][[b]]$nrmse
+      
+      ind <- ind + 1
+    }
+  }
+  ind <- 1
+  for (i in 1:length(errorlist[[2]]))
+  {
+    for (b in 1:length(errorlist[[2]][[i]]))
+    {
+      df[ind, 10] <- errorlist[[2]][[i]][[b]]$rmse
+      df[ind, 11] <- errorlist[[2]][[i]][[b]]$nrmse
+      
+      ind <- ind + 1
+    }
+  }
+  return(df)
+}
+  
+
+  
+  
