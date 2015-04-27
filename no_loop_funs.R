@@ -199,13 +199,14 @@ modelerrors <- function(models, data)
           sigma_val <- kpar(kernelf(models[[m]]))$sigma
           C_val <- param(models[[m]])$C
           eps_val <- param(models[[m]])$epsilon
+          SV <- nSV(models[[m]])
           traine <- error(models[[m]])
           pred <- predict(models[[m]], Xtr)
           residual <- ytr - pred
           rmse <- rmse(obs=ytr, pred=pred)
           nrmse <- NRMSE(obs=ytr, pred=pred)
-          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, eps_val=eps_val,
-               traine=traine, rmse=rmse, nrmse=nrmse)
+          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, SV=SV,
+               eps_val=eps_val, traine=traine, rmse=rmse, nrmse=nrmse)
         }, models=models, Xtr=Xtr, ytr=ytr)
       setNames(list2, mnames)
     }, tr=tr, models=models, mc.cores=detectCores())
@@ -221,12 +222,13 @@ modelerrors <- function(models, data)
           sigma_val <- kpar(kernelf(models[[m]]))$sigma
           C_val <- param(models[[m]])$C
           eps_val <- param(models[[m]])$epsilon
+          SV <- nSV(models[[m]])
           pred <- predict(models[[m]], Xts)
           residual <- yts - pred
           rmse <- rmse(obs=yts, pred=pred)
           nrmse <- NRMSE(obs=yts, pred=pred)
-          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, eps_val=eps_val,
-               rmse=rmse, nrmse=nrmse)
+          list(pred=pred, residual=residual, sigma_val=sigma_val, C_val=C_val, SV=SV,
+               eps_val=eps_val, rmse=rmse, nrmse=nrmse)
         }, models=models, Xts=Xts, yts=yts)
       setNames(list3, mnames)
     }, ts=ts, models=models, mc.cores=detectCores())
