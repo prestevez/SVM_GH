@@ -201,9 +201,9 @@ modelerrors <- function(models, data)
           residual <- ytr - pred
           rmse <- rmse(obs=ytr, pred=pred)
           nrmse <- NRMSE(obs=ytr, pred=pred)
-          list(error=error, pred=pred, residual=residual, rmse=rmse, NRMSE=NRMSE)
+          list(pred=pred, residual=residual, traine=traine, rmse=rmse, nrmse=nrmse)
         }, models=models, Xtr=Xtr, ytr=ytr)
-      names(list2) <- mnames
+      setNames(list2, mnames)
     }, tr=tr, models=models, mc.cores=detectCores())
   names(Training) <- trnames
   Testing <- mclapply(1:length(ts), function(t, ts, models)
@@ -214,19 +214,21 @@ modelerrors <- function(models, data)
       mnames <- names(models)
       list3 <- lapply(1:length(models), function(m, models, Xts, yts)
         {
-          pred <- predict(models[m], Xts)
+          pred <- predict(models[[m]], Xts)
           residual <- yts - pred
           rmse <- rmse(obs=yts, pred=pred)
           nrmse <- NRMSE(obs=yts, pred=pred)
-          list(pred=pred, residual=residual, rmse=rmse, NRMSE=NRMSE)
+          list(pred=pred, residual=residual, rmse=rmse, nrmse=nrmse)
         }, models=models, Xts=Xts, yts=yts)
-      names(list3) <- mnames
+      setNames(list3, mnames)
     }, ts=ts, models=models, mc.cores=detectCores())
   names(Testing) <- tsnames
-  return(list(Training=Training, Testing=Testing))
+#   return(list(Training=Training, Testing=Testing))
+  return(list(Training, Testing))
 }
 
 system.time(
   errorlist <- modelerrors(models_fun, tr_sets)
   )
 
+errunlist <- unlist(errorlist, recursive=FALSE)
