@@ -174,8 +174,98 @@ system.time(
   models2 <- svm_search_mcoreSigma(data=spdata1, period=period1, sigma=sigma, C=C, epsilon=ep)
 )
 
+
 # errors from second search
 
 system.time(
   errorlist2 <- modelerrors(models=models2, data=spdata1)
 )
+
+
+# Integrate results in a table
+
+results1 <- tabresults(errorlist1, period1)
+
+results2 <- tabresults(errorlist2, period1)
+
+Results1.2 <- rbind(results1, results2)
+
+# Plot error
+
+#Training set
+# As sigma increases, and C decreases, Tr.RMSE decreases
+Plot1 <- qplot(Sigma, Tr.RMSE, data=Results1.2, colour=C, size=Epsilon)
+Plot1
+
+Plot2 <- qplot(C, Tr.RMSE, data=Results1.2, colour=Sigma, size=Epsilon)
+Plot2
+
+Plot3 <- qplot(Epsilon, Tr.RMSE, data=Results1.2, colour=C, size=Sigma)
+Plot3
+
+# Testing Set
+Plot4 <- qplot(Sigma, Ts.RMSE, data=Results1.2, colour=C, size=Epsilon)
+Plot4
+
+Plot5 <- qplot(C, Ts.RMSE, data=Results1.2, colour=Sigma, size=Epsilon)
+Plot5
+
+Plot6 <- qplot(Epsilon, Ts.RMSE, data=Results1.2, colour=C, size=Sigma)
+Plot6
+
+# Testing vs Training
+
+# If C and sigma is too large TrRMSE<TsRMSE, if C too little, TrRMSE and TsRMSE large
+# Best Sigma and C are mid range C and small sigma
+Plot7 <- qplot(Tr.RMSE, Ts.RMSE, data=Results1.2, colour=Sigma, size=C)
+Plot7
+
+# Epsilon ranges across
+Plot8 <- qplot(Tr.RMSE, Ts.RMSE, data=Results1.2, colour=Sigma, size=Epsilon)
+Plot8
+
+
+## For best models
+# Predicted vs Residual
+qplot(errorlist2[[1]][[1]][[1]]$pred, errorlist2[[1]][[1]][[1]]$residual)
+
+# observed vs forecast
+qplot(spdata1[[1]][[1]][[2]], errorlist2[[1]][[1]][[1]]$pred) + geom_abline()
+
+# residual scatter plot
+qplot(errorlist2[[1]][[1]][[1]]$residual, geom="density")
+
+?glm
+
+### Selecting best parameters based on Ts.RMSE, for second stage search
+
+best_results1.2 <- Results1.2[order(Results1.2[,10]),]
+best_results1.2
+
+## Best Parameters
+sigma <- 0.05
+C <- 50
+ep <- 0.5
+
+## System crashed when attempted to save, lost objects, was able to save best_results1.2 as csv
+
+# setwd(dirRdata)
+# best_results1.2 <- read.csv("best_results12.csv")
+# 
+# Results1.2 <- best_results1.2[order(best_results1.2[,1]),]
+# rownames(Results1.2) <- c(1:nrow(Results1.2))
+# 
+# Results1.2 <- Results1.2[,-1]
+# 
+# best_results1.2 <- best_results1.2[,-1]
+
+save.image()
+
+
+# Second stage
+m <- c(1)
+interval <- c(1) # can embedd more than one interval at a time
+col <- c(1)
+
+
+

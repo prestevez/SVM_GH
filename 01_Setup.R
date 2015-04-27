@@ -9,7 +9,7 @@
 
 library(kernlab)
 library(parallel)
-# library(ggplot2)
+library(ggplot2)
 # library(knitr)
 
 # Set up objects for WD paths
